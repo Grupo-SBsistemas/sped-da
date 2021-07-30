@@ -1,5 +1,5 @@
 {
-    "name": "Grupo-SBsistemas/sped-da",
+    "name": "grupo-sbsistemas/sped-da",
     "type": "library",
     "description": "sped-da contêm as classes para criação dos documentos auxiliares referidos no projeto Sped.",
     "keywords": ["nfe", "sped", "nfephp", "Danfe", "Dacte", "CCe" ],
