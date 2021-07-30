@@ -647,7 +647,7 @@ class Dacte extends DaCommon
                 'font' => $this->fontePadrao,
                 'size' => 11,
                 'style' => '');
-            $this->pdf->textBox($x - 14.5, $y2 + 3.5, $w * 0.5, $h1, 'X', $aFont, 'T', 'C', 0, '', false);
+            $this->pdf->textBox($x - 11, $y2 + 3.5, $w * 0.5, $h1, 'X', $aFont, 'T', 'C', 0, '', false);
         } else {
             $aFont = array(
                 'font' => $this->fontePadrao,
@@ -796,7 +796,8 @@ class Dacte extends DaCommon
             'style' => '');
         $this->pdf->textBox($xa, $y + 1, $wa, $h, $texto, $aFont, 'T', 'C', 0, '');
         $texto = !empty($this->ide->getElementsByTagName("dhEmi")->item(0)->nodeValue) ?
-            date('d/m/Y H:i:s', strtotime($this->getTagValue($this->ide, "dhEmi"))) : '';
+            date('d/m/Y H:i:s', $this->pConvertTime($this->getTagValue($this->ide, "dhEmi"))) : '';
+
         $aFont = $this->formatNegrito;
         $this->pdf->textBox($xa, $y + 5, $wa, $h, $texto, $aFont, 'T', 'C', 0, '');
         $this->pdf->line($xa + $wa, $y, $xa + $wa, $y + $h + 1);
@@ -881,7 +882,7 @@ class Dacte extends DaCommon
             ) {
                 $texto .= date(
                     'd/m/Y   H:i:s',
-                    strtotime($this->getTagValue($this->protCTe, "dhRecbto"))
+                    $this->pConvertTime($this->getTagValue($this->protCTe, "dhRecbto"))
                 );
             }
             $texto = $this->getTagValue($this->protCTe, "nProt") == '' ? '' : $texto;
@@ -1582,13 +1583,19 @@ class Dacte extends DaCommon
                     $this->getTagValue($infQ, "qCarga") : $this->getTagValue($infQ, "qCarga") * 1000;
             }
         }
-        $texto = 'PESO BRUTO (KG)';
+
+        // TP MED/UN MED 1
+        $texto = 'TP MED/UN MED';
         $aFont = array(
             'font' => $this->fontePadrao,
             'size' => 5,
             'style' => '');
         $this->pdf->textBox($x + 8, $y, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
-        $texto = number_format($qCarga, 3, ",", ".");
+                    $qCarga = $this->getTagValue($this->infQ->item(0), "qCarga");
+
+            $texto =
+                $this->getTagValue($this->infQ->item(0), "tpMed")."\r\n"
+                .number_format($qCarga, 3, ",", ".").' - '.$this->zUnidade($this->getTagValue($this->infQ->item(0), "cUnid"));
         $aFont = array(
             'font' => $this->fontePadrao,
             'size' => 7,
@@ -1596,13 +1603,22 @@ class Dacte extends DaCommon
         $this->pdf->textBox($x + 2, $y + 3, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
         $x = $w * 0.12;
         $this->pdf->line($x + 13.5, $y, $x + 13.5, $y + 9);
-        $texto = 'PESO BASE CÁLCULO (KG)';
+
+        // TP MED/UN MED 2
+        $texto = 'TP MED/UN MED';
         $aFont = array(
             'font' => $this->fontePadrao,
             'size' => 5,
             'style' => '');
         $this->pdf->textBox($x + 20, $y, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
-        $texto = number_format($qCarga, 3, ",", ".");
+                    $qCarga = $this->getTagValue($this->infQ->item(1), "qCarga");
+
+        $texto = '';
+        if (!empty($qCarga)){
+            $texto =
+            $this->getTagValue($this->infQ->item(1), "tpMed")."\r\n"
+            .number_format($qCarga, 3, ",", ".").' - '.$this->zUnidade($this->getTagValue($this->infQ->item(1), "cUnid"));
+        }
         $aFont = array(
             'font' => $this->fontePadrao,
             'size' => 7,
@@ -1610,13 +1626,20 @@ class Dacte extends DaCommon
         $this->pdf->textBox($x + 17, $y + 3, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
         $x = $w * 0.24;
         $this->pdf->line($x + 25, $y, $x + 25, $y + 9);
-        $texto = 'PESO AFERIDO (KG)';
+        $texto = 'TP MED/UN MED';
         $aFont = array(
             'font' => $this->fontePadrao,
             'size' => 5,
             'style' => '');
         $this->pdf->textBox($x + 35, $y, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
-        $texto = number_format($qCarga, 3, ",", ".");
+                    $qCarga = $this->getTagValue($this->infQ->item(2), "qCarga");
+
+        $texto = '';
+        if (!empty($qCarga)){
+            $texto =
+            $this->getTagValue($this->infQ->item(1), "tpMed")."\r\n"
+            .number_format($qCarga, 3, ",", ".").' - '.$this->zUnidade($this->getTagValue($this->infQ->item(1), "cUnid"));
+        }
         $aFont = array(
             'font' => $this->fontePadrao,
             'size' => 7,
@@ -2558,11 +2581,11 @@ class Dacte extends DaCommon
             $nDoc = $this->getTagValue($temp, "nDoc");
             $dEmi = $this->getTagValue($temp, "dEmi");
             if (!empty($dEmi)) {
-                $dEmi = "Emissão: " . date('d/m/Y', strtotime($this->getTagValue($temp, "dEmi")));
+                $dEmi = "Emissão: " . date('d/m/Y', $this->pConvertTime($this->getTagValue($temp, "dEmi")));
             }
             $vDocFisc = $this->getTagValue($temp, "vDocFisc", "Valor: ");
             $dPrev = $this->getTagValue($temp, "dPrev");
-            $dPrev = !empty($dPrev) ? ("Entrega: " . date('d/m/Y', strtotime($this->getTagValue($temp, "dPrev")))) : '';
+            $dPrev = !empty($dPrev) ? ("Entrega: " . date('d/m/Y', $this->pConvertTime($this->getTagValue($temp, "dPrev")))) : '';
             switch ($tpDoc) {
                 case "00":
                     $tpDoc = "00 - Declaração";
@@ -3835,4 +3858,39 @@ class Dacte extends DaCommon
         $pic = 'data://text/plain;base64,' . base64_encode($qrcode);
         $this->pdf->image($pic, $xQr - 3, $yQr, $wQr, $hQr, 'PNG');
     }
+
+        /**
+     * zUnidade
+     * Converte a imformação de peso contida na CTe
+     *
+     * @param  string $c unidade de trafego extraida da CTe
+     * @return string
+     */
+    protected function zUnidade($c = '')
+    {
+        switch ($c) {
+            case '00':
+                $r = 'M3';
+                break;
+            case '01':
+                $r = 'KG';
+                break;
+            case '02':
+                $r = 'TON';
+                break;
+            case '03':
+                $r = 'UN';
+                break;
+            case '04':
+                $r = 'LT';
+                break;
+            case '05':
+                $r = 'MMBTU';
+                break;
+            default:
+                $r = '';
+        }
+        return $r;
+    } //fim unidade
+
 }

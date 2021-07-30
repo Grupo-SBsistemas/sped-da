@@ -267,14 +267,14 @@ class DanfeSimples extends DaCommon
         $pesoL = 0.000;
         $pesoB = 0.000;
         $totalVolumes = 0;
-        
+
         // Normalizar o array de volumes quando tem apenas 1 volumes
         if (!isset($this->nfeArray['NFe']['infNFe']['transp']['vol'][0])) {
             $this->nfeArray['NFe']['infNFe']['transp']['vol'] = [
                 $this->nfeArray['NFe']['infNFe']['transp']['vol']
             ];
         }
-        
+
         foreach ($this->nfeArray['NFe']['infNFe']['transp']['vol'] as $vol) {
             if (!isset($volumes[$vol['esp']])) {
                 $volumes[$vol['esp']] = 0;
@@ -284,7 +284,7 @@ class DanfeSimples extends DaCommon
             $pesoB += $vol['pesoB'];
             $pesoL += $vol['pesoL'];
         }
-        
+
         // LINHA 1
         $this->pdf->setFont('Arial', 'B', $pequeno ? 10 : 12);
         $this->pdf->cell(
@@ -298,7 +298,7 @@ class DanfeSimples extends DaCommon
         );
 
         // LINHA 2
-        $dataEmissao = date('d/m/Y', strtotime("{$this->nfeArray['NFe']['infNFe']['ide']['dhEmi']}"));
+        $dataEmissao = date('d/m/Y', $this->pConvertTime("{$this->nfeArray['NFe']['infNFe']['ide']['dhEmi']}"));
         $c1 = ($this->maxW - ($this->margesq * 2)) / 4;
         $this->pdf->setFont('Arial', 'B', $pequeno ? 8 : 10);
         $this->pdf->cell($c1, $pequeno ? 4 : 5, "TIPO NF", 1, 0, 'C', 1);
@@ -339,7 +339,7 @@ class DanfeSimples extends DaCommon
         $this->pdf->setFont('Arial', 'B', $pequeno ? 8 : 10);
         $this->pdf->cell($c1, $pequeno ? 4 : 5, "PROTOCOLO", 1, 0, 'C', 1);
         $this->pdf->setFont('Arial', '', 10);
-        $dataProto = date("d/m/Y H:i:s", strtotime($this->nfeArray['protNFe']['infProt']['dhRecbto']));
+        $dataProto = date("d/m/Y H:i:s", $this->pConvertTime($this->nfeArray['protNFe']['infProt']['dhRecbto']));
         $this->pdf->cell(
             ($c1 * 3),
             $pequeno ? 4 : 5,
@@ -479,7 +479,7 @@ class DanfeSimples extends DaCommon
             'C',
             1
         );
-        
+
         if ($totalVolumes > 0) {
             foreach ($volumes as $esp => $qVol) {
                 $this->pdf->cell(
@@ -493,10 +493,10 @@ class DanfeSimples extends DaCommon
                 );
             }
         }
-        
+
         $pesoL = number_format($pesoL, 3, ',', '.');
         $pesoB = number_format($pesoB, 3, ',', '.');
-        
+
         $this->pdf->cell(
             ($c1 * 4),
             $pequeno ? 5 : 6,
