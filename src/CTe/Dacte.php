@@ -1637,8 +1637,8 @@ class Dacte extends DaCommon
         $texto = '';
         if (!empty($qCarga)){
             $texto =
-            $this->getTagValue($this->infQ->item(1), "tpMed")."\r\n"
-            .number_format($qCarga, 3, ",", ".").' - '.$this->zUnidade($this->getTagValue($this->infQ->item(1), "cUnid"));
+            $this->getTagValue($this->infQ->item(2), "tpMed")."\r\n"
+            .number_format($qCarga, 3, ",", ".").' - '.$this->zUnidade($this->getTagValue($this->infQ->item(2), "cUnid"));
         }
         $aFont = array(
             'font' => $this->fontePadrao,
