@@ -85,6 +85,7 @@ class Dacte extends DaCommon
     protected $totPag;
     protected $margemInterna = 0;
     protected $formatoChave = "#### #### #### #### #### #### #### #### #### #### ####";
+    protected $cteSub;
 
     /**
      * __construct
@@ -201,6 +202,7 @@ class Dacte extends DaCommon
             $this->protCTe = $this->dom->getElementsByTagName("protCTe")->item(0);
             //01-Rodoviário; //02-Aéreo; //03-Aquaviário; //04-Ferroviário;//05-Dutoviário
             $this->modal = $this->getTagValue($this->ide, "modal");
+            $this->cteSub = $this->dom->getElementsByTagName("infCteSub")->item(0);
         }
     }
 
@@ -2856,6 +2858,76 @@ class Dacte extends DaCommon
             $yIniDados = $yIniDados + 4;
             $auxX = $oldX;
         }
+
+        if ($this->cteSub != null) {
+            if ($this->cteSub->getElementsByTagName('chCte')->length && $this->cteSub->getElementsByTagName('chCte')->item(0)->nodeValue) {
+                $texto = $this->cteSub->getElementsByTagName('chCte')->item(0)->nodeValue;
+                $aFont = array(
+                    'font' => $this->fontePadrao,
+                    'size' => 8,
+                    'style' => '');
+                $this->pdf->textBox($auxX, $yIniDados, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
+                $texto = '';
+                $aFont = array(
+                    'font' => $this->fontePadrao,
+                    'size' => 8,
+                    'style' => '');
+                $this->pdf->textBox($w * 0.40, $yIniDados, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
+                $yIniDados += 3.5;
+            }
+
+            if ($this->cteSub->getElementsByTagName('refCteAnu')->length && $this->cteSub->getElementsByTagName('refCteAnu')->item(0)->nodeValue) {
+                $texto = $this->cteSub->getElementsByTagName('refCteAnu')->item(0)->nodeValue;
+                $aFont = array(
+                    'font' => $this->fontePadrao,
+                    'size' => 8,
+                    'style' => '');
+                $this->pdf->textBox($auxX, $yIniDados, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
+                $texto = '';
+                $aFont = array(
+                    'font' => $this->fontePadrao,
+                    'size' => 8,
+                    'style' => '');
+                $this->pdf->textBox($w * 0.40, $yIniDados, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
+                $yIniDados += 3.5;
+            }
+
+            if ($this->cteSub->getElementsByTagName('refNFe')->length && $this->cteSub->getElementsByTagName('refNFe')->item(0)->nodeValue) {
+                $texto = $this->cteSub->getElementsByTagName('refNFe')->item(0)->nodeValue;
+                $aFont = array(
+                    'font' => $this->fontePadrao,
+                    'size' => 8,
+                    'style' => '');
+                $this->pdf->textBox($auxX, $yIniDados, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
+                $texto = '';
+                $aFont = array(
+                    'font' => $this->fontePadrao,
+                    'size' => 8,
+                    'style' => '');
+                $this->pdf->textBox($w * 0.40, $yIniDados, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
+                $yIniDados += 3.5;
+            }
+
+            if ($this->cteSub->getElementsByTagName('refCTe')->length && $this->cteSub->getElementsByTagName('refCTe')->item(0)->nodeValue) {
+                $texto = $this->cteSub->getElementsByTagName('refCTe')->item(0)->nodeValue;
+                $aFont = array(
+                    'font' => $this->fontePadrao,
+                    'size' => 8,
+                    'style' => '');
+                $this->pdf->textBox($auxX, $yIniDados, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
+                $texto = '';
+                $aFont = array(
+                    'font' => $this->fontePadrao,
+                    'size' => 8,
+                    'style' => '');
+                $this->pdf->textBox($w * 0.40, $yIniDados, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
+                $yIniDados += 3.5;
+            }
+        }
+
+
+
+
         $texto = $this->chaveCTeRef;
         $aFont = array(
             'font' => $this->fontePadrao,
