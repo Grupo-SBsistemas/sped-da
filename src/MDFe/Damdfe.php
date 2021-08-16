@@ -1381,7 +1381,7 @@ class Damdfe extends DaCommon
         $this->pdf->textBox($x, $y, $x2, 8, $texto, $aFont, 'T', 'L', 0, '', false);
         //$y = $this->hPrint - 4;
         $y = $this->hPrint+8;
-        $texto = "Impresso em  " . date('d/m/Y H:i:s') . ' ' . $this->creditos;
+        $texto = $this->creditos;
         $w = $this->wPrint - 4;
         $aFont = array('font' => $this->fontePadrao, 'size' => 6, 'style' => 'I');
         $this->pdf->textBox($x, $y, $w, 4, $texto, $aFont, 'T', 'L', 0, '');
