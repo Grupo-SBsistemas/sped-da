@@ -183,6 +183,12 @@ class Damdfe extends DaCommon
     public function buildMDFe()
     {
         $this->pdf = new Pdf($this->orientacao, 'mm', $this->papel);
+        if ($this->fontePadrao == "poppins") {
+            $this->pdf->addFont('poppins', '', 'Poppins.php');
+            $this->pdf->addFont('poppins', 'B', 'PoppinsB.php');
+            $this->pdf->addFont('poppins', 'I', 'PoppinsI.php');
+            $this->pdf->addFont('poppins', 'BI', 'PoppinsBI.php');
+        }
         if ($this->orientacao == 'P') {
             // margens do PDF
             $margSup = 7;
@@ -670,7 +676,7 @@ class Damdfe extends DaCommon
         $aFont = array('font' => $this->fontePadrao, 'size' => 8, 'style' => '');
         $this->pdf->textBox($x1, $y, $x3-1, 8, $texto, $aFont, 'T', 'L', 0, '', false);
         $data = explode('T', $this->dhEmi);
-        $texto = $this->ymdTodmy($data[0]) . ' - ' . $data[1];
+        $texto = $this->ymdTodmy($data[0]) . ' - ' . substr($data[1], 0, 8);
         $aFont = array('font' => $this->fontePadrao, 'size' => 10, 'style' => 'B');
         $this->pdf->textBox($x1, $y + 4, $x3-1, 4, $texto, $aFont, 'T', 'L', 0, '', false);
         $x1 += $x3;
@@ -1071,6 +1077,7 @@ class Damdfe extends DaCommon
             $altura = $y;
             for ($i = 0; $i < $valesPedagios; $i++) {
                 $altura += 4;
+                ($this->valePed->item($i)->getElementsByTagName('nCompra'));
                 $texto = $this->valePed->item($i)->getElementsByTagName('nCompra')->item(0)->nodeValue;
                 $aFont = array('font' => $this->fontePadrao, 'size' => 8, 'style' => '');
                 $this->pdf->textBox($x1, $altura, $x2 + 6, 10, $texto, $aFont, 'T', 'L', 0, '', false);
