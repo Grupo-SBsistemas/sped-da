@@ -830,10 +830,10 @@ class Damdfe extends DaCommon
         $this->pdf->textBox($x, $y, $maxW / 2, 8, $texto, $aFont, 'T', 'L', 0, '');
         $aFont = array('font' => $this->fontePadrao, 'size' => 10, 'style' => '');
         if (is_object($this->mdfeProc)) {
-            $tsHora = $this->toTimestamp($this->dhRecbto);
-            $texto = $this->nProt . ' - ' . date('d/m/Y H:i:s', $tsHora);
+            $data = explode('T', $this->dhRecbto);
+            $texto = $this->ymdTodmy($data[0]) . ' - ' . substr($data[1], 0, 8);
         } else {
-            $texto = 'DAMDFE impresso em contingência - ' . date('d/m/Y   H:i:s');
+            $texto = 'DAMDFE impresso em contingência - ' . date('d/m/Y   H:i:s', -3);
         }
         $this->pdf->textBox($x, $y + 4, $maxW / 2, 8, $texto, $aFont, 'T', 'L', 0, '');
 
