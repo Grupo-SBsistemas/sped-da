@@ -1670,6 +1670,8 @@ class Dacte extends DaCommon
         $aFont = $this->formatPadrao;
         $this->pdf->textBox($x + 85, $y, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
         $qCarga = 0;
+
+        // ANDRÉ, AQUI ESTA A REGRA DO qCarga(un) TODO
         foreach ($this->infQ as $infQ) {
             if ($this->getTagValue($infQ, "cUnid") == '03') {
                 $qCarga += (float)$this->getTagValue($infQ, "qCarga");
@@ -3800,7 +3802,7 @@ class Dacte extends DaCommon
         return $cnpj;
     }
 
-    /**
+     /**
      * formatFone
      * Formata campo fone contida na CTe
      *
@@ -3827,7 +3829,6 @@ class Dacte extends DaCommon
             return '';
         }
     }
-
     /**
      * unidade
      * Converte a imformação de peso contida na CTe
