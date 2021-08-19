@@ -831,7 +831,7 @@ class Damdfe extends DaCommon
         $aFont = array('font' => $this->fontePadrao, 'size' => 10, 'style' => '');
         if (is_object($this->mdfeProc)) {
             $data = explode('T', $this->dhRecbto);
-            $texto = $this->ymdTodmy($data[0]) . ' - ' . substr($data[1], 0, 8);
+            $texto = $this->ymdTodmy($data[0]) . ' - ' . $data[1];
         } else {
             $texto = 'DAMDFE impresso em contingência - ' . date('d/m/Y   H:i:s', -3);
         }
@@ -978,19 +978,16 @@ class Damdfe extends DaCommon
                 if (strlen(strval($nApol)) != 20 || strlen(strval($nAver)) != 40) {
                     continue;
                 }
-                $resp_cnpj = $s->getElementsByTagName("infResp")->item(0)->getElementsByTagName("CNPJ")->item(0)->nodeValue ?? null;
-                $resp_cpf = $s->getElementsByTagName("infResp")->item(0)->getElementsByTagName("CPF")->item(0)->nodeValue ?? null;
+                $resp_cnpj = $s->getElementsByTagName("CNPJ")->item(0)->nodeValue ?? null;
                 if ($resp_cnpj) {
                     $resp_doc = $this->formatField(str_pad($resp_cnpj, 14, '0', STR_PAD_LEFT), '##.###.###/####-##');
-                } else {
-                    $resp_doc = $this->formatField(str_pad($resp_cpf, 9, '0', STR_PAD_LEFT), '###.###.###-##');
                 }
                 $segu = $s->getElementsByTagName("xSeg")->item(0)->nodeValue ?? "";
 
                 $x1 = $x;
                 $y += 15;
                 $x2 = round($maxW *.22, 0);
-                $x3 = round($maxW*.55, 0);
+                $x3 = round($maxW*.53, 0);
                 $x4 = round($maxW*.71, 0);
                 $aFont = array('font' => $this->fontePadrao, 'size' => 8, 'style' => 'B');
                 $this->pdf->textBox($x1, $y, 9999, 5, "Seguro de Carga", $aFont, 'T', 'L', 0, '', false);
