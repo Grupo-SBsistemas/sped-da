@@ -676,7 +676,7 @@ class Dacte extends DaCommon
         //$this->pdf->Line($x, $y1 + 8, $w + 3, $y1 + 8);
         $toma = $this->getTagValue($this->ide, "indGlobalizado");
         //0-Remetente;1-Expedidor;2-Recebedor;3-Destinatário;4 - Outros
-        if ($toma == 0) {
+        if ($toma == 1) {
             $aFont = array(
                 'font' => $this->fontePadrao,
                 'size' => 11,
