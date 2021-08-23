@@ -864,7 +864,6 @@ class Dacte extends DaCommon
         //codigo de barras
         $this->pdf->setFillColor(0, 0, 0);
         $this->pdf->code128($x + (($w - $bW) / 2), $y + 2, $chave_acesso, $bW, $bH);
-        $this->pdf->textBox($x, $y + $h1, $w + 0.5, $h1 - 6);
         $texto = 'CHAVE DE ACESSO';
         $aFont = $this->formatPadrao;
         $this->pdf->setFillColor(255, 255, 255);
@@ -873,7 +872,6 @@ class Dacte extends DaCommon
         $texto = $this->formatField($chave_acesso, $this->formatoChave);
 
         $this->pdf->textBox($x, $y + $h1 + 3, $w, $h, $texto, $aFont, 'T', 'C', 0, '');
-        $this->pdf->textBox($x, $y + $h1 + 8, $w + 0.5, $h1 - 4.5);
         $texto = "Consulta em http://www.cte.fazenda.gov.br/portal";
 
         if ($this->tpEmis == 5 || $this->tpEmis == 7 || $this->tpEmis == 8) {
@@ -896,7 +894,6 @@ class Dacte extends DaCommon
         $y += $h + 1;
         $h = 8.5;
         $wa = $w;
-        $this->pdf->textBox($x, $y + 7.5, $w + 0.5, $h);
         if (!empty($this->numdepec)) {
             $texto = 'NÚMERO DE REGISTRO DPEC';
         } elseif ($this->tpEmis == 5 || $this->tpEmis == 7 || $this->tpEmis == 8) {
@@ -932,14 +929,12 @@ class Dacte extends DaCommon
             $this->qrCodeDacte($y - 27);
             $w = 45;
             $x += 92.5;
-            $this->pdf->textBox($x, $y - 34, $w + 0.5, $h + 41.5);
         }
         //CFOP
         $x = $oldX;
         $h = 8.5;
         $w = round($maxW * 0.32);
         $y1 = $y + 7.5;
-        $this->pdf->textBox($x, $y1, $w + 2, $h);
         $texto = 'CFOP - NATUREZA DA PRESTAÇÃO';
         $aFont = array(
             'font' => $this->fontePadrao,
@@ -954,7 +949,6 @@ class Dacte extends DaCommon
         $x = $oldX;
         $h = 8;
         $w = ($maxW * 0.5);
-        $this->pdf->textBox($x, $y, $w + 0.5, $h);
         $texto = 'INÍCIO DA PRESTAÇÃO';
         $aFont = array(
             'font' => $this->fontePadrao,
@@ -969,7 +963,6 @@ class Dacte extends DaCommon
         $x = $oldX + $w + 1;
         $h = 8;
         $w = $w - 1.3;
-        $this->pdf->textBox($x - 0.5, $y, $w + 0.5, $h);
         $texto = 'TÉRMINO DA PRESTAÇÃO';
         $aFont = array(
             'font' => $this->fontePadrao,
