@@ -183,12 +183,6 @@ class Damdfe extends DaCommon
     public function buildMDFe()
     {
         $this->pdf = new Pdf($this->orientacao, 'mm', $this->papel);
-        if ($this->fontePadrao == "poppins") {
-            $this->pdf->addFont('poppins', '', 'Poppins.php');
-            $this->pdf->addFont('poppins', 'B', 'PoppinsB.php');
-            $this->pdf->addFont('poppins', 'I', 'PoppinsI.php');
-            $this->pdf->addFont('poppins', 'BI', 'PoppinsBI.php');
-        }
         if ($this->orientacao == 'P') {
             // margens do PDF
             $margSup = 7;
