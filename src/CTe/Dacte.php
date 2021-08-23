@@ -921,7 +921,8 @@ class Dacte extends DaCommon
             if (!empty($this->protCTe)
                 && !empty($this->protCTe->getElementsByTagName("dhRecbto")->item(0)->nodeValue)
             ) {
-                $texto .=  (new \DateTime($this->getTagValue($this->ide, "dhEmi")))->format('d/m/Y H:i:s');
+                $texto .=  (new \DateTime($this->getTagValue($this->ide, "dhEmi")))->format('d/m/Y H:i');
+
             }
             $texto = $this->getTagValue($this->protCTe, "nProt") == '' ? '' : $texto;
         }
@@ -1057,7 +1058,7 @@ class Dacte extends DaCommon
                 $infEvento = $retEvento->getElementsByTagName('infEvento')->item(0);
                 $cStat = $this->getTagValue($infEvento, "cStat");
                 $tpEvento = $this->getTagValue($infEvento, "tpEvento");
-                $dhEvento = date("d/m/Y H:i:s", $this->toTimestamp($this->getTagValue($infEvento, "dhRegEvento")));
+                $dhEvento = (new \DateTime($this->getTagValue($infEvento, "dhRegEvento")))->format('d/m/Y H:i:s');
                 $nProt = $this->getTagValue($infEvento, "nProt");
                 if ($tpEvento == '110111'
                     && ($cStat == '101'
@@ -2683,11 +2684,17 @@ class Dacte extends DaCommon
             $nDoc = $this->getTagValue($temp, "nDoc");
             $dEmi = $this->getTagValue($temp, "dEmi");
             if (!empty($dEmi)) {
-                $dEmi = "Emissão: " . date('d/m/Y', $this->pConvertTime($this->getTagValue($temp, "dEmi")));
+                $tempData = (new \DateTime($this->getTagValue($temp, "dEmi")))->format('d/m/Y');
+                $dEmi = "Emissão: " . $tempData;
             }
             $vDocFisc = $this->getTagValue($temp, "vDocFisc", "Valor: ");
             $dPrev = $this->getTagValue($temp, "dPrev");
-            $dPrev = !empty($dPrev) ? ("Entrega: " . date('d/m/Y', $this->pConvertTime($this->getTagValue($temp, "dPrev")))) : '';
+            if (!empty($dPrev)) {
+                $tempData =                 (new \DateTime($this->getTagValue($temp, "dPrev")))->format('d/m/Y');
+                $dPrev = "Entrega: ".$tempData;
+            } else {
+                $dPrev = '';
+            }
             switch ($tpDoc) {
                 case "00":
                     $tpDoc = "00 - Declaração";

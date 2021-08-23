@@ -311,11 +311,11 @@ class Daevento extends DaCommon
         $texto = 'ID do Evento: ' . $this->id;
         $aFont = array('font' => $this->fontePadrao, 'size' => 10, 'style' => '');
         $this->pdf->textBox($x, $y + 15, $w2, 8, $texto, $aFont, 'T', 'L', 0, '');
-        $tsHora = $this->toTimestamp($this->dhEvento);
-        $texto = 'Criado em : ' . date('d/m/Y   H:i:s', $tsHora);
+        $tsHora = (new \DateTime($this->dhEvento))->format('d/m/Y H:i:s');
+        $texto = 'Criado em : ' .$tsHora;
         $this->pdf->textBox($x, $y + 20, $w2, 8, $texto, $aFont, 'T', 'L', 0, '');
-        $tsHora = $this->toTimestamp($this->dhRegEvento);
-        $texto = 'Prococolo: ' . $this->nProt . '  -  Registrado na SEFAZ em: ' . date('d/m/Y   H:i:s', $tsHora);
+        $tsHora = (new \DateTime($this->getTagValue($this->ide, "dhEmi")))->format('d/m/Y H:i:s');
+        $texto = 'Prococolo: ' . $this->nProt . '  -  Registrado na SEFAZ em: ' .$tsHora;
         $this->pdf->textBox($x, $y + 25, $w2, 8, $texto, $aFont, 'T', 'L', 0, '');
         //####################################################
         $x = $oldX;
@@ -459,7 +459,7 @@ class Daevento extends DaCommon
         $aFont = array('font' => $this->fontePadrao, 'size' => 10, 'style' => 'I');
         $this->pdf->textBox($x, $y, $w, 20, $texto, $aFont, 'T', 'C', 0, '', false);
         $y = $this->hPrint - 4;
-        $texto = "Impresso em  " . date('d/m/Y   H:i:s') . ' ' . $this->creditos;
+        $texto = $this->creditos;
         $w = $this->wPrint - 4;
         $aFont = array('font' => $this->fontePadrao, 'size' => 6, 'style' => 'I');
         $this->pdf->textBox($x, $y, $w, 4, $texto, $aFont, 'T', 'L', 0, '');

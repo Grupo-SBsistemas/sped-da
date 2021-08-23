@@ -183,6 +183,7 @@ class Damdfe extends DaCommon
     public function buildMDFe()
     {
         $this->pdf = new Pdf($this->orientacao, 'mm', $this->papel);
+
         if ($this->orientacao == 'P') {
             // margens do PDF
             $margSup = 7;
@@ -434,7 +435,7 @@ class Damdfe extends DaCommon
                 $infEvento = $retEvento->getElementsByTagName('infEvento')->item(0);
                 $cStat = $this->getTagValue($infEvento, "cStat");
                 $tpEvento = $this->getTagValue($infEvento, "tpEvento");
-                $dhEvento = date("d/m/Y H:i:s", $this->toTimestamp($this->getTagValue($infEvento, "dhRegEvento")));
+                $dhEvento = (new \DateTime($this->getTagValue($infEvento, "dhRegEvento")))->format('d/m/Y H:i:s');
                 $nProt = $this->getTagValue($infEvento, "nProt");
                 if ($tpEvento == '110111'
                     && ($cStat == '101'
@@ -824,8 +825,7 @@ class Damdfe extends DaCommon
         $this->pdf->textBox($x, $y, $maxW / 2, 8, $texto, $aFont, 'T', 'L', 0, '');
         $aFont = array('font' => $this->fontePadrao, 'size' => 10, 'style' => '');
         if (is_object($this->mdfeProc)) {
-            $data = explode('T', $this->dhRecbto);
-            $texto = $this->ymdTodmy($data[0]) . ' - ' . $data[1];
+            $texto = (new \DateTime($this->dhRecbto))->format('d/m/Y H:i:s');
         } else {
             $texto = 'DAMDFE impresso em contingência - ' . date('d/m/Y   H:i:s', -3);
         }
