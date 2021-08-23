@@ -314,7 +314,7 @@ class Daevento extends DaCommon
         $tsHora = (new \DateTime($this->dhEvento))->format('d/m/Y H:i:s');
         $texto = 'Criado em : ' .$tsHora;
         $this->pdf->textBox($x, $y + 20, $w2, 8, $texto, $aFont, 'T', 'L', 0, '');
-        $tsHora = (new \DateTime($this->getTagValue($this->ide, "dhEmi")))->format('d/m/Y H:i:s');
+        $tsHora = (new \DateTime($this->dhRegEvento))->format('d/m/Y H:i:s');
         $texto = 'Prococolo: ' . $this->nProt . '  -  Registrado na SEFAZ em: ' .$tsHora;
         $this->pdf->textBox($x, $y + 25, $w2, 8, $texto, $aFont, 'T', 'L', 0, '');
         //####################################################
