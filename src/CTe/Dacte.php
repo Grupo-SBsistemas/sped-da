@@ -20,6 +20,7 @@ use Exception;
 use NFePHP\DA\Legacy\Dom;
 use NFePHP\DA\Legacy\Pdf;
 use NFePHP\DA\Common\DaCommon;
+use DateTime;
 
 class Dacte extends DaCommon
 {
@@ -248,12 +249,12 @@ class Dacte extends DaCommon
             'style' => 'B');
         if ($this->orientacao == 'P') {
             // margens do PDF
-            $margSup = 2;
-            $margEsq = 2;
-            $margDir = 2;
+            $margSup = 4;
+            $margEsq = 4;
+            $margDir = 4;
             // posição inicial do relatorio
-            $xInic = 1;
-            $yInic = 1;
+            $xInic = 3;
+            $yInic = 3;
             if ($this->papel == 'A4') {
                 //A4 210x297mm
                 $maxW = 210;
@@ -304,11 +305,14 @@ class Dacte extends DaCommon
         $y += 24;
         $r = $this->cabecalho($x, $y, $pag, $totPag);
         $y += 70;
+        $y = $y+1;
         $this->pdf->line($x, $y, $maxW, $y);
 
+        $y = $y+1;
         $r = $this->remetente($x, $y);
         $x = $this->wPrint * 0.5 + 2;
-        $this->pdf->line($x-2, $y, $x-2, $y+19);
+
+        $this->pdf->line($x-2, $y-1, $x-2, $y+19);
 
         $r = $this->destinatario($x, $y);
         $y += 19;
@@ -459,13 +463,17 @@ class Dacte extends DaCommon
         }
         if ($this->modal == 3) {
             if ($this->flagDetContContinuacao == 1) {
-                $this->detContContinuacao(1, 71);
+                $x = $xInic;
+                $this->detContContinuacao($x, 71);
             } elseif ($this->flagDocOrigContinuacao == 1) {
-                $this->docOrigContinuacao(1, 71);
+                $x = $xInic;
+
+                $this->docOrigContinuacao($x, 71);
             }
         } else {
             if ($this->flagDocOrigContinuacao == 1) {
-                $this->docOrigContinuacao(1, 71);
+                $x = $xInic;
+                $this->docOrigContinuacao($x, 71);
             }
         }
     }
@@ -484,6 +492,7 @@ class Dacte extends DaCommon
     {
         $oldX = $x;
         $oldY = $y;
+        $y = $y+2;
         if ($this->orientacao == 'P') {
             $maxW = $this->wPrint;
         } else {
@@ -569,7 +578,7 @@ class Dacte extends DaCommon
         $cpfCnpj = $this->formatCNPJCPF($this->emit);
         $ie = $this->getTagValue($this->emit, "IE");
         $texto = 'CNPJ: ' . $cpfCnpj . ' IE: ' . $ie;
-        $this->pdf->textBox($x1 - 1, $y1 + 4, $tw + 5, 8, $texto, $aFont, 'T', 'C', 0, '', true);
+        $this->pdf->textBox($x1 - 1, $y1 + 4, $tw, 8, $texto, $aFont, 'T', 'C', 0, '', true);
 
         //endereço
         $y1 = $y1 + 3;
@@ -587,7 +596,7 @@ class Dacte extends DaCommon
         $texto = $lgr . ", " . $nro ." ".  $bairro . "\n" .
             $mun . "/" . $UF . " - " . $CEP
             . "\n  Fone: " . $fone;
-        $this->pdf->textBox($x1 - 5, $y1 + 4, $tw + 5, 8, $texto, $aFont, 'T', 'C', 0, '');
+        $this->pdf->textBox($x1, $y1 + 4, $tw , 8, $texto, $aFont, 'T', 'C', 0, '', true);
 
         //outra caixa
         $h1 = 17.5;
@@ -685,7 +694,7 @@ class Dacte extends DaCommon
         $this->pdf->Line($x + 8, $y2 + 4, $x + 8, $y2 + 8);
         $this->pdf->Line($x + 3, $y2 + 4, $x + 8, $y2 + 4);
         $this->pdf->Line($x + 3, $y2 + 8, $x + 8, $y2 + 8);
-        $this->pdf->textBox($x - 9, $y2 + 4.4, $w * 0.5, $h1, 'SIM', $aFont, 'T', 'C', 0, '', false);
+        $this->pdf->textBox($x - 8, $y2 + 4.4, $w * 0.5, $h1, 'SIM', $aFont, 'T', 'C', 0, '', false);
         $this->pdf->Line($x + 15, $y2 + 4, $x + 15, $y2 + 8);
         $this->pdf->Line($x + 20, $y2 + 4, $x + 20, $y2 + 8);
         $this->pdf->Line($x + 15, $y2 + 4, $x + 20, $y2 + 4);
@@ -753,7 +762,7 @@ class Dacte extends DaCommon
         $this->pdf->setFillColor(188, 224, 246);
 
         $x1 = $x1 + $w;
-        $w = round($maxW * 0.08, 0);
+        $w = round($maxW * 0.09, 0);
         $this->pdf->textBox($x1, $y, $w, $h, '', $aFont, 'T', 'L', 0, '', false, 0, 0, true);
 
         $texto = 'FL';
@@ -818,9 +827,11 @@ class Dacte extends DaCommon
         $texto = 'DATA E HORA DE EMISSÃO';
         $aFont = $this->formatPadrao;
         $this->pdf->textBox($xa, $y + 1, $wa, $h, $texto, $aFont, 'T', 'L', 0, '');
-        $texto = !empty($this->ide->getElementsByTagName("dhEmi")->item(0)->nodeValue) ?
-            date('d/m/Y H:i:s', $this->pConvertTime($this->getTagValue($this->ide, "dhEmi"))) : '';
-
+        if (!empty($this->ide->getElementsByTagName("dhEmi")->item(0)->nodeValue)) {
+            $texto = (new \DateTime($this->getTagValue($this->ide, "dhEmi")))->format('d/m/Y H:i:s');
+        } else {
+            $texto = '';
+        }
         $aFont = $this->formatNegrito;
         $this->pdf->textBox($xa, $y + 5, $wa, $h, $texto, $aFont, 'T', 'L', 0, '');
         //$this->pdf->Line($xa + $wa, $y, $xa + $wa, $y + $h + 1);
@@ -910,10 +921,7 @@ class Dacte extends DaCommon
             if (!empty($this->protCTe)
                 && !empty($this->protCTe->getElementsByTagName("dhRecbto")->item(0)->nodeValue)
             ) {
-                $texto .= date(
-                    'd/m/Y   H:i:s',
-                    $this->pConvertTime($this->getTagValue($this->protCTe, "dhRecbto"))
-                );
+                $texto .=  (new \DateTime($this->getTagValue($this->ide, "dhEmi")))->format('d/m/Y H:i:s');
             }
             $texto = $this->getTagValue($this->protCTe, "nProt") == '' ? '' : $texto;
         }
@@ -1658,18 +1666,14 @@ class Dacte extends DaCommon
             }
         }
 
-        $texto = 'QTD';
+        $texto = 'QTD.
+        carga';
         $aFont = array(
             'font' => $this->fontePadrao,
-            'size' => 5,
+            'size' => 6,
             'style' => '');
         $this->pdf->textBox($x, $y, $w, $h, $texto, $aFont, 'T', 'L', 0, '', true, 0, 0, false);
-        $texto = 'carga';
-        $aFont = array(
-            'font' => $this->fontePadrao,
-            'size' => 5,
-            'style' => 'B');
-        $this->pdf->textBox($x, $y + 3, $w, $h, $texto, $aFont, 'T', 'L', 0, '', true, 0, 0, false);
+
 
         $texto = 'PESO BRUTO (KG)';
         $aFont = array(
@@ -1838,31 +1842,34 @@ class Dacte extends DaCommon
         //$this->pdf->Line($x, $y, $w + 1, $y);
         $texto = 'NOME';
         $aFont = $this->formatPadrao;
-        $this->pdf->textBox($x, $y, $w * 0.14, $h, $texto, $aFont, 'T', 'L', 0, '', true, 0, 0, false);
+        $this->pdf->textBox($x, $y, $w * 0.14, $h, $texto, $aFont, 'T', 'L', 0, '', true, 0, 0, true);
         $yIniDados = $y;
         $x = $w * 0.14;
         $texto = 'VALOR';
         $aFont = $this->formatPadrao;
-        $this->pdf->textBox($x, $y, $w * 0.14, $h, $texto, $aFont, 'T', 'L', 0, '', true, 0, 0, false);
+        $this->pdf->textBox($x, $y, $w * 0.14, $h, $texto, $aFont, 'T', 'L', 0, '', true, 0, 0, true);
         $x = $w * 0.28;
         //$this->pdf->Line($x, $y, $x, $y + 21.5);
         $texto = 'NOME';
         $aFont = $this->formatPadrao;
-        $this->pdf->textBox($x, $y, $w * 0.14, $h, $texto, $aFont, 'T', 'L', 0, '', true, 0, 0, false);
+        $this->pdf->textBox($x, $y, $w * 0.14, $h, $texto, $aFont, 'T', 'L', 0, '', true, 0, 0, true);
         $x = $w * 0.42;
         $texto = 'VALOR';
         $aFont = $this->formatPadrao;
-        $this->pdf->textBox($x, $y, $w * 0.14, $h, $texto, $aFont, 'T', 'L', 0, '', true, 0, 0, false);
+
+        $this->pdf->textBox($x, $y, $w * 0.14, $h, $texto, $aFont, 'T', 'L', 0, '', true, 0, 0, true);
         $x = $w * 0.56;
         //$this->pdf->Line($x, $y, $x, $y + 21.5);
         $texto = 'NOME';
+
         $aFont = $this->formatPadrao;
-        $this->pdf->textBox($x, $y, $w * 0.14, $h, $texto, $aFont, 'T', 'L', 0, '', true, 0, 0, false);
+        $this->pdf->textBox($x, $y, $w * 0.14, $h, $texto, $aFont, 'T', 'L', 0, '', true, 0, 0, true);
         $x = $w * 0.70;
         $texto = 'VALOR';
+
         $aFont = $this->formatPadrao;
-        $this->pdf->textBox($x, $y, $w * 0.14, $h, $texto, $aFont, 'T', 'L', 0, '', true, 0, 0, false);
-        $x = $w * 0.86;
+        $this->pdf->textBox($x, $y, $w * 0.14, $h, $texto, $aFont, 'T', 'L', 0, '', true, 0, 0, true);
+        $x = $w * 0.84;
         //$this->pdf->Line($x, $y, $x, $y + 21.5);
         $y += 1;
         $texto = 'VALOR TOTAL DO SERVIÇO';
@@ -1889,6 +1896,7 @@ class Dacte extends DaCommon
         $auxX = $oldX;
         $yIniDados += 4;
         foreach ($this->Comp as $k => $d) {
+            $aux = $k+1;
             $nome = $this->Comp->item($k)->getElementsByTagName('xNome')->item(0)->nodeValue;
             $valor = number_format(
                 $this->Comp->item($k)->getElementsByTagName('vComp')->item(0)->nodeValue,
@@ -1903,8 +1911,13 @@ class Dacte extends DaCommon
             $texto = $nome;
             $aFont = $this->formatPadrao;
             $this->pdf->textBox($auxX, $yIniDados, $w * 0.14, $h, $texto, $aFont, 'T', 'L', 0, '', true, 0, 0, false);
-            $auxX += $w * 0.14;
             $texto = $valor;
+            if ($auxX != $oldX) {
+                $auxX += $w * 0.14;
+            } else {
+                $auxX = $w*.14;
+            }
+            //$auxX += $w * 0.14;
             $aFont = $this->formatPadrao;
             $this->pdf->textBox($auxX, $yIniDados, $w * 0.14, $h, $texto, $aFont, 'T', 'L', 0, '', true, 0, 0, false);
             $auxX += $w * 0.14;
@@ -2346,7 +2359,7 @@ class Dacte extends DaCommon
             $x = $x2;
             $y = $y2;
             $this->pdf->AddPage($this->orientacao, $this->papel);
-            $r = $this->cabecalho(1, 1, $i, $this->totPag);
+            $r = $this->cabecalho(1, 3, $i, $this->totPag);
             $oldX = $x;
             $oldY = $y;
             if ($this->orientacao == 'P') {
@@ -2785,7 +2798,8 @@ class Dacte extends DaCommon
             $x = $x2;
             $y = $y2;
             $this->pdf->AddPage($this->orientacao, $this->papel);
-            $r = $this->cabecalho(1, 1, $i, $this->totPag);
+            $this->pdf->setMargins(5, 5, 5);
+            $r = $this->cabecalho($x, 3, $i, $this->totPag);
             $oldX = $x;
             $oldY = $y;
             if ($this->orientacao == 'P') {
@@ -2804,11 +2818,14 @@ class Dacte extends DaCommon
             } // Caso tenha apenas 1 registro na ultima linha
             $texto = 'DOCUMENTOS ORIGINÁRIOS - CONTINUACÃO';
             $aFont = $this->formatPadrao;
+            $y +=3;
+            $this->pdf->line($x, $y, $maxW, $y);
+            $y +=2;
             $this->pdf->textBox($x, $y, $w, $h, $texto, $aFont, 'T', 'C', 0, '');
             $descr1 = 'TIPO DOC';
             $descr2 = 'CNPJ/CHAVE/OBS';
             $descr3 = 'SÉRIE/NRO. DOCUMENTO';
-            $y += 3.4;
+            $y += 3.5;
             //$this->pdf->Line($x, $y, $w + 1, $y);
             $texto = $descr1;
             $aFont = $this->formatPadrao;
