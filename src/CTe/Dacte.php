@@ -157,7 +157,7 @@ class Dacte extends DaCommon
             $this->imp = $this->dom->getElementsByTagName("imp")->item(0);
             $textoAdic = $this->dom->getElementsByTagName("compl")->item(0);
 
-            $this->textoAdic = $this->dom->getElementsByTagName($textoAdic, "xTexto");
+            $this->textoAdic = $this->getTagValue($textoAdic, "xTexto");
 
             $this->toma4 = $this->dom->getElementsByTagName("toma4")->item(0);
             $this->toma03 = $this->dom->getElementsByTagName("toma3")->item(0);
