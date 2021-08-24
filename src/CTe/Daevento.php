@@ -251,7 +251,7 @@ class Daevento extends DaCommon
         //Nome emitente
         $aFont = array('font' => $this->fontePadrao, 'size' => 12, 'style' => 'B');
         $texto = (isset($this->dadosEmitente['razao']) ? $this->dadosEmitente['razao'] : '');
-        $this->pdf->textBox($x1, $y1, $tw, 8, $texto, $aFont, 'T', 'C', 0, '');
+        $this->pdf->textBox($x1, $y1, $tw, 8, $texto, $aFont, 'T', 'C', 0, '', true);
         //endereço
         $y1 = $y1 + 6;
         $aFont = array('font' => $this->fontePadrao, 'size' => 8, 'style' => '');
@@ -288,7 +288,7 @@ class Daevento extends DaCommon
         $texto .= ($texto != '' && $tmp_txt != '' ? "\n" : '') . $tmp_txt;
         $tmp_txt = $email;
         $texto .= ($texto != '' && $tmp_txt != '' ? "\n" : '') . $tmp_txt;
-        $this->pdf->textBox($x1, $y1 - 2, $tw, 8, $texto, $aFont, 'T', 'C', 0, '');
+        $this->pdf->textBox($x1, $y1 - 2, $tw, 8, $texto, $aFont, 'T', 'C', 0, '', true);
         //##################################################
         $w2 = round($maxW - $w, 0);
         $x += $w;
