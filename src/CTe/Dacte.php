@@ -918,8 +918,7 @@ class Dacte extends DaCommon
             if (!empty($this->protCTe)
                 && !empty($this->protCTe->getElementsByTagName("dhRecbto")->item(0)->nodeValue)
             ) {
-                $texto .=  (new \DateTime($this->getTagValue($this->ide, "dhEmi")))->format('d/m/Y H:i');
-
+                $texto .=  (new \DateTime($this->protCTe->getElementsByTagName("dhRecbto")->item(0)->nodeValue))->format('d/m/Y H:i');
             }
             $texto = $this->getTagValue($this->protCTe, "nProt") == '' ? '' : $texto;
         }
@@ -1746,7 +1745,7 @@ class Dacte extends DaCommon
             'font' => $this->fontePadrao,
             'size' => 7,
             'style' => 'B');
-        $this->pdf->textBox($x + 50, $y + 3, $w, $h, $texto, $aFont, 'T', 'L', 0, '', true, 0, 0, false);
+        $this->pdf->textBox($x + 60, $y + 3, $w, $h, $texto, $aFont, 'T', 'L', 0, '', true, 0, 0, false);
         $x = $w * 0.45;
         ////$this->pdf->Line($x+37, $y, $x+37, $y + 9);
         $texto = 'QTDE(VOL)';
