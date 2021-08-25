@@ -778,7 +778,7 @@ class Damdfe extends DaCommon
             $aFont = array('font' => $this->fontePadrao, 'size' => 8, 'style' => '');
             $this->pdf->textBox($x1, $y, $x2-1, 10, '', $aFont, 'T', 'L', 0, '', 1, 0, 0, 1);
             $this->pdf->textBox($x1, $y, $x2-1, 8, $texto, $aFont, 'T', 'L', 0, '', false);
-            $texto = number_format($this->tot->getElementsByTagName('vTot')->item(0)->nodeValue, 2, ',', '.');
+            $texto = number_format($this->tot->getElementsByTagName('vCarga')->item(0)->nodeValue, 2, ',', '.');
             $aFont = array('font' => $this->fontePadrao, 'size' => 10, 'style' => 'B');
             $this->pdf->textBox($x1, $y + 4, $x2, 4, $texto, $aFont, 'T', 'L', 0, '', false);
         }
