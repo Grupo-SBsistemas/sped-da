@@ -1011,7 +1011,7 @@ class Damdfe extends DaCommon
 
 
             $x1 = $x;
-            $y += 8;
+            $y = $altura += 8;
             $yold = $y;
             $x2 = round($maxW / 2, 0);
             $valesPedagios = 1;
