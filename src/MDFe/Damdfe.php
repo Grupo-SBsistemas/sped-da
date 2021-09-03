@@ -979,8 +979,8 @@ class Damdfe extends DaCommon
                 $segu = $s->getElementsByTagName("xSeg")->item(0)->nodeValue ?? "";
 
                 $x1 = $x;
-                $y += 15;
-                $x2 = round($maxW *.22, 0);
+                $y = $altura += 8;
+                $x2 = round($maxW *.25, 0);
                 $x3 = round($maxW*.53, 0);
                 $x4 = round($maxW*.71, 0);
                 $aFont = array('font' => $this->fontePadrao, 'size' => 8, 'style' => 'B');
@@ -1005,6 +1005,7 @@ class Damdfe extends DaCommon
                 $this->pdf->textBox($x3, $y, 9999, 5, $nApol, $aFont, 'T', 'L', 0, '', false);
                 $aFont = array('font' => $this->fontePadrao, 'size' => 8, 'style' => '');
                 $this->pdf->textBox($x4, $y, 9999, 5, $nAver, $aFont, 'T', 'L', 0, '', false);
+                $altura = $y;
                 break;
                 // dar um break para pegar só o primeiro seguro
             }
