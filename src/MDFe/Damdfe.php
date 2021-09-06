@@ -875,6 +875,7 @@ class Damdfe extends DaCommon
              * @var \DOMNodeList $veicReboque
              */
             $veicReboque = $this->veicReboque;
+
             foreach ($veicReboque as $k => $item) {
                 /**
                  *
@@ -887,6 +888,7 @@ class Damdfe extends DaCommon
                 $this->pdf->SetLineWidth(0.03);
                 $this->pdf->line($x1, $altura, $x2*2, $altura);
             }
+            $altura_placa = $altura;
             $x1 += $x2;
             $this->pdf->textBox($x1, $y, $x2, $tamanho, '', $this->baseFont, 'T', 'L', 0);
             $texto = 'RNTRC';
@@ -939,14 +941,15 @@ class Damdfe extends DaCommon
             $this->pdf->textBox($x1, $y, $x2, 8, $texto, $aFont, 'T', 'L', 0, '', false);
             $yold = $y;
 
+            $altura_condutor = $y;
             for ($i = 0; $i < $this->condutor->length; $i++) {
-                $y += 4;
+                $altura_condutor += 4;
                 $texto = $this->formatField(str_pad($this->condutor->item($i)->getElementsByTagName('CPF')->item(0)->nodeValue, 9, '0', STR_PAD_LEFT), '###.###.###-##');
                 $aFont = array('font' => $this->fontePadrao, 'size' => 8, 'style' => '');
-                $this->pdf->textBox($x1, $y, $x2 - 1, 10, $texto, $aFont, 'T', 'L', 0, '', false);
+                $this->pdf->textBox($x1, $altura_condutor, $x2 - 1, 10, $texto, $aFont, 'T', 'L', 0, '', false);
                 if ($i != 0) {
                     $this->pdf->SetLineWidth(0.03);
-                    $this->pdf->line($x1, $y, $old_x2*2, $y);
+                    $this->pdf->line($x1, $altura_condutor, $old_x2*2, $altura_condutor);
                 }
             }
             $y = $yold;
@@ -979,7 +982,8 @@ class Damdfe extends DaCommon
                 $segu = $s->getElementsByTagName("xSeg")->item(0)->nodeValue ?? "";
 
                 $x1 = $x;
-                $y = $altura += 8;
+                $y = $altura_placa > $altura_condutor ? $altura_placa : $altura_condutor;
+                $y = $y += 8;
                 $x2 = round($maxW *.25, 0);
                 $x3 = round($maxW*.53, 0);
                 $x4 = round($maxW*.71, 0);
