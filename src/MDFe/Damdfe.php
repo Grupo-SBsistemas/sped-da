@@ -968,6 +968,8 @@ class Damdfe extends DaCommon
 
 
 
+            $altura = $altura_placa > $altura_condutor ? $altura_placa : $altura_condutor;
+
             foreach ($this->seg as $s) {
                 $nApol = $s->getElementsByTagName('nApol')->item(0)->nodeValue ?? "";
                 $nAver = $s->getElementsByTagName('nAver')->item(0)->nodeValue ?? "";
@@ -982,7 +984,7 @@ class Damdfe extends DaCommon
                 $segu = $s->getElementsByTagName("xSeg")->item(0)->nodeValue ?? "";
 
                 $x1 = $x;
-                $y = $altura_placa > $altura_condutor ? $altura_placa : $altura_condutor;
+                $y = $altura;
                 $y = $y += 8;
                 $x2 = round($maxW *.25, 0);
                 $x3 = round($maxW*.53, 0);
