@@ -127,13 +127,13 @@ class Daevento extends DaCommon
             $this->orientacao = 'P';
         }
         // margens do PDF
-        $margSup = $this->margsup;
-        $margEsq = $this->margesq;
-        $margDir = $this->margesq;
+        $margSup = 4;
+        $margEsq = 4;
+        $margDir = 4;
         $this->pdf = new Pdf($this->orientacao, 'mm', $this->papel);
         if ($this->orientacao == 'P') {
             // posição inicial do relatorio
-            $xInic = 1;
+            $xInic = $margEsq;
             $yInic = 1;
             if ($this->papel == 'A4') { //A4 210x297mm
                 $maxW = 210;
@@ -173,6 +173,7 @@ class Daevento extends DaCommon
         $y = $this->header($x, $y, $pag);
         //coloca os dados da CCe
         $y = $this->body($x, $y + 15);
+        $y += 1;
         //coloca os dados da CCe
         $y = $this->footer($x, $y + $this->hPrint - 20);
         //retorna o ID do evento
@@ -341,8 +342,7 @@ class Daevento extends DaCommon
         $aFont = array('font' => $this->fontePadrao, 'size' => 12, 'style' => 'B');
         $numNF = substr($this->chCTe, 25, 9);
         $serie = substr($this->chCTe, 22, 3);
-        $numNF = $this->formatField($numNF, "###.###.###");
-        $texto = "Conhecimento: " . $numNF . '  -   Série: ' . $serie;
+        $texto = "Conhecimento: " . (int)$numNF . '  -   Série: ' . (int)$serie;
         $this->pdf->textBox($x + 2, $y + 19, $w2, 8, $texto, $aFont, 'T', 'L', 0, '');
         $bW = 87;
         $bH = 15;
@@ -362,7 +362,7 @@ class Daevento extends DaCommon
             $this->pdf->textBox($x, $sY, $maxW, 15);
             $texto = $this->xCondUso;
             $aFont = array('font' => $this->fontePadrao, 'size' => 8, 'style' => 'I');
-            $this->pdf->textBox($x + 2, $sY + 2, $maxW - 2, 15, $texto, $aFont, 'T', 'L', 0, '', false);
+            $this->pdf->textBox($x + 2, $sY + 2, $maxW - 2, 15, $texto, $aFont, 'T', 'C', 0, '', false);
             $retVal = $sY + 2;
         }
         if ($this->tpAmb != 1) {
@@ -404,18 +404,22 @@ class Daevento extends DaCommon
         $y += 5;
         $this->pdf->textBox($x, $y, $maxW, 190);
         if ($this->tpEvento == '110110') {
-            $this->pdf->textBox($x, $y, $maxW = ($maxW / 5), 5, "Grupo", $aFont, 'T', 'C', 0, '', false);
-            $this->pdf->textBox($x = $maxW, $y, $maxW, 5, "Campo", $aFont, 'T', 'C', 0, '', false);
-            $this->pdf->textBox($x = ($maxW * 2), $y, $maxW, 5, "Número", $aFont, 'T', 'C', 0, '', false);
-            $this->pdf->textBox($x = ($maxW * 3), $y, ($this->wPrint - $x), 5, "Valor", $aFont, 'T', 'C', 0, '', false);
+            $maxW = ($maxW / 6);
+            $this->pdf->textBox($x, $y, $maxW, 5, "Grupo", $aFont, 'T', 'C', 0, '', false);
+            $this->pdf->textBox($x+$maxW, $y, $maxW, 5, "Campo", $aFont, 'T', 'C', 0, '', false);
+            $this->pdf->textBox($x+ ($maxW * 2), $y, $maxW, 5, "Número", $aFont, 'T', 'C', 0, '', false);
+            $this->pdf->textBox($x + ($maxW * 3), $y, ($maxW * 3), 5, "Valor", $aFont, 'T', 'C', 0, '', false);
 
             $aFont = array('font' => $this->fontePadrao, 'size' => 9, 'style' => '');
             $i = 0;
-            $numlinhas = 1;
+            $auxY = $y+5;
             while ($i < $this->infCorrecao->length) {
-                $x = 0;
-                $y = $numlinhas == 1 ? ($y + 5) : ($y + (5 * $numlinhas));
-                $maxW = $this->wPrint;
+                $encolher = false;
+                $x = 4;
+                if ($auxY >= 268) {
+
+                }
+                $y = $auxY;
                 $grupo = $this->infCorrecao->item($i)->getElementsByTagName('grupoAlterado')->item(0)->nodeValue;
                 $campo = $this->infCorrecao->item($i)->getElementsByTagName('campoAlterado')->item(0)->nodeValue;
                 $numero = 1;
@@ -424,11 +428,29 @@ class Daevento extends DaCommon
                 }
                 $valor = $this->infCorrecao->item($i)->getElementsByTagName('valorAlterado')->item(0)->nodeValue;
 
+                $len = strlen((string)$valor);
+                $lines = ceil($len/56);
+                $tH = 5;
+                if ($lines > 1) {
+                    $tH = $lines*3.4;
+                }
+                $auxY += $tH;
+
+                if ($auxY > 267) {
+                    $this->pdf->line($x, 267, $maxW*6+4, 267);
+                    $text = "*Para consultar as demais alterações consulte o XML do documento.";
+                    $this->pdf->textBox($x, 268, $maxW*6, 3.4, $text, $aFont, 'T', "L", false);
+                    break;
+                    $encolher = false;
+                }
+
+                $this->pdf->textBox($x, $y, $maxW, $tH, $grupo, $aFont, 'T', 'C', 0, '', false);
+                $this->pdf->textBox($x + $maxW, $y, $maxW, $tH, $campo, $aFont, 'T', 'C', 0, '', false);
+                $this->pdf->textBox($x +($maxW *2), $y, $maxW, $tH, $numero, $aFont, 'T', 'C', 0, '', false);
+
+                $this->pdf->textBox($x+($maxW * 3), $y, $maxW*3, $tH, $tH.$valor, $aFont, 'T', 'C', 0, '', $encolher);
+                $this->pdf->line($x, $y, $maxW*6+4, $y);
                 $i++;
-                $this->pdf->textBox($x, $y, $maxW = ($maxW / 5), 5, $grupo, $aFont, 'T', 'C', 0, '', false);
-                $this->pdf->textBox($x = $maxW, $y, $maxW, 5, $campo, $aFont, 'T', 'C', 0, '', false);
-                $this->pdf->textBox($x = ($maxW * 2), $y, $maxW, 5, $numero, $aFont, 'T', 'C', 0, '', false);
-                $this->pdf->textBox($x = ($maxW * 3), $y, ($this->wPrint - $x), 5, $valor, $aFont, 'T', 'C', 0);
             }
         } elseif ($this->tpEvento == '110111') {
             $texto = $this->xJust;
@@ -444,6 +466,7 @@ class Daevento extends DaCommon
      */
     private function footer($x, $y)
     {
+
         $w = $this->wPrint;
         if ($this->tpEvento == '110110') {
             $texto = "Este documento é uma representação gráfica da CCe e foi "
