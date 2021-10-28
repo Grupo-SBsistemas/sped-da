@@ -448,7 +448,7 @@ class Daevento extends DaCommon
                 $this->pdf->textBox($x + $maxW, $y, $maxW, $tH, $campo, $aFont, 'T', 'C', 0, '', false);
                 $this->pdf->textBox($x +($maxW *2), $y, $maxW, $tH, $numero, $aFont, 'T', 'C', 0, '', false);
 
-                $this->pdf->textBox($x+($maxW * 3), $y, $maxW*3, $tH, $tH.$valor, $aFont, 'T', 'C', 0, '', $encolher);
+                $this->pdf->textBox($x+($maxW * 3), $y, $maxW*3, $tH, $valor, $aFont, 'T', 'C', 0, '', $encolher);
                 $this->pdf->line($x, $y, $maxW*6+4, $y);
                 $i++;
             }
