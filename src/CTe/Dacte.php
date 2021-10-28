@@ -2361,13 +2361,13 @@ class Dacte extends DaCommon
                     'size' => $this->default_size,
                     'style' => '');
                 $this->pdf->textBox($auxX, $yIniDados, $w * 0.10, $h, $texto, $aFont, 'T', 'L', 0, '', true, 0, 0, false);
-                $auxX += $w * 0.07;
+                $auxX += $w * 0.10;
                 $texto = $chaveNFe;
                 $aFont = array(
                     'font' => $this->fontePadrao,
                     'size' => $this->default_size,
                     'style' => '');
-                $this->pdf->textBox($auxX, $yIniDados, $w * 0.27, $h, $texto, $aFont, 'T', 'L', 0, '', true, 0, 0, false);
+                $this->pdf->textBox($auxX, $yIniDados, $w * 0.27, $h, $texto, $aFont, 'T', 'L', 1, '', true, 0, 0, false);
                 $auxX += $w * 0.28;
                 $texto = $doc;
                 $aFont = array(
@@ -2375,7 +2375,7 @@ class Dacte extends DaCommon
                     'size' => $this->default_size,
                     'style' => '');
                 $this->pdf->textBox($auxX, $yIniDados, $w * 0.30, $h, $texto, $aFont, 'T', 'L', 0, '', true, 0, 0, false);
-                $auxX += $w * 0.15;
+                $auxX += $w * 0.14;
                 $contador++;
                 $yIniDados = $yIniDados + 3.5;
             }
@@ -2555,7 +2555,7 @@ class Dacte extends DaCommon
         $x += $w * 0.07;
         $texto = $descr2;
         $aFont = $this->formatPadrao;
-        $this->pdf->textBox($x, $y, $w * 0.23, $h, $texto, $aFont, 'T', 'L', 0, '', true, 0, 0, false);
+        $this->pdf->textBox($x+$w*0.02, $y, $w * 0.23, $h, $texto, $aFont, 'T', 'L', 0, '', true, 0, 0, false);
         $x += $w * 0.28;
         $texto = $descr3;
         $aFont = $this->formatPadrao;
@@ -2607,7 +2607,7 @@ class Dacte extends DaCommon
             //$this->pdf->textBox($auxX, $this->yDocOriginal, $w * 0.10, $h, $texto, $aFont, 'T', 'L', 0, '', true, 0, 0, false);
             $this->pdf->textBox($auxX, $this->yDocOriginal, $w * 0.23, $h, $texto, $aFont, 'T', 'L', 0, '', true, 0, 0, false);
             //$auxX += $w * 0.09;
-            $auxX += $w * 0.07;
+            $auxX += $w * 0.09;
             $texto = $cnpj;
             $aFont = array(
                 'font' => $this->fontePadrao,
@@ -2621,7 +2621,7 @@ class Dacte extends DaCommon
                 'size' => $this->default_size,
                 'style' => '');
             $this->pdf->textBox($auxX, $this->yDocOriginal, $w * 0.13, $h, $texto, $aFont, 'T', 'L', 0, '', true, 0, 0, false);
-            $auxX += $w * 0.15;
+            $auxX += $w * 0.14;
         }
         foreach ($this->infNFe as $k => $d) {
             $chaveNFe = $this->infNFe->item($k)->getElementsByTagName('chave')->item(0)->nodeValue;
@@ -2691,7 +2691,7 @@ class Dacte extends DaCommon
                 'size' => $this->default_size,
                 'style' => '');
             $this->pdf->textBox($auxX, $this->yDocOriginal, $w * 0.10, $h, $texto, $aFont, 'T', 'L', 0, '', true, 0, 0, false);
-            $auxX += $w * 0.07;
+            $auxX += $w * 0.09;
             $texto = $chaveNFe;
             $aFont = array(
                 'font' => $this->fontePadrao,
@@ -2705,7 +2705,7 @@ class Dacte extends DaCommon
                 'size' => $this->default_size,
                 'style' => '');
             $this->pdf->textBox($auxX, $this->yDocOriginal, $w * 0.30, $h, $texto, $aFont, 'T', 'L', 0, '', true, 0, 0, false);
-            $auxX += $w * 0.15;
+            $auxX += $w * 0.14;
             $contador++;
         }
         foreach ($this->infOutros as $k => $d) {
@@ -2734,7 +2734,10 @@ class Dacte extends DaCommon
                     $tpDoc = "10 - Dutoviário";
                     break;
                 case "99":
-                    $tpDoc = "99 - Outros: [" . $descOutros . "]";
+                    $tpDoc = $descOutros;
+                    if (strlen((string)$descOutros) > 15) {
+                        $tpDoc = substr($descOutros, 0, 12)."...";
+                    }
                     break;
                 default:
                     break;
@@ -2745,13 +2748,14 @@ class Dacte extends DaCommon
                 $this->yDocOriginal = $this->yDocOriginal + 4;
                 $auxX = $oldX;
             }
-            $this->pdf->textBox($auxX, $this->yDocOriginal, $w * 0.10, $h, $tpDoc, $aFont, 'T', 'L', 0, '');
+            $this->pdf->textBox($auxX, $this->yDocOriginal, $w * 0.09, $h, $tpDoc, $aFont, 'T', 'L', 0, '', false);
             $auxX += $w * 0.09;
             $this->pdf->textBox($auxX, $this->yDocOriginal, $w * 0.27, $h, $cnpjChave, $aFont, 'T', 'L', 0, '');
             $auxX += $w * 0.28;
             $this->pdf->textBox($auxX, $this->yDocOriginal, $w * 0.30, $h, $nDoc, $aFont, 'T', 'L', 0, '');
             $auxX += $w * 0.14;
         }
+
         foreach ($this->idDocAntEle as $k => $d) {
             $tp = 'CT-e';
             $chaveCTe = $this->idDocAntEle->item($k)->getElementsByTagName('chCTe')->item(0)->nodeValue;
@@ -2872,7 +2876,7 @@ class Dacte extends DaCommon
             $x += $w * 0.07; // COLUNA CNPJ/CHAVE/OBS
             $texto = $descr2;
             $aFont = $this->formatPadrao;
-            $this->pdf->textBox($x, $y, $w * 0.23, $h, $texto, $aFont, 'T', 'L', 0, '', true, 0, 0, false);
+            $this->pdf->textBox($x + $w*0.02, $y, $w * 0.23, $h, $texto, $aFont, 'T', 'L', 0, '', true, 0, 0, false);
             $x += $w * 0.28;
             $texto = $descr3;
             $aFont = $this->formatPadrao;
@@ -2942,7 +2946,7 @@ class Dacte extends DaCommon
                     'size' => $this->default_size,
                     'style' => '');
                 $this->pdf->textBox($auxX, $yIniDados, $w * 0.30, $h, $texto, $aFont, 'T', 'L', 0, '', true, 0, 0, false);
-                $auxX += $w * 0.15;
+                $auxX += $w * 0.14;
                 $contador++;
             }
             $this->pdf->line($maxW * .5, $oldIni, $maxW*.5, $yIniDados+3.5);
