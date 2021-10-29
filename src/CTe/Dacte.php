@@ -2560,7 +2560,7 @@ class Dacte extends DaCommon
         $texto = $descr3;
         $aFont = $this->formatPadrao;
         $this->pdf->textBox($x, $y, $w * 0.13, $h, $texto, $aFont, 'T', 'L', 0, '', true, 0, 0, false);
-        $x += $w * 0.12;
+        $x += $w * 0.14;
         if ($this->modal == '1') {
             if ($this->lota == 1) {
 
@@ -2579,10 +2579,10 @@ class Dacte extends DaCommon
         $texto = $descr1;
         $aFont = $this->formatPadrao;
         $this->pdf->textBox($x, $y, $w * 0.10, $h, $texto, $aFont, 'T', 'L', 0, '', true, 0, 0, false);
-        $x += $w * 0.11;
+        $x += $w * 0.09;
         $texto = $descr2;
         $aFont = $this->formatPadrao;
-        $this->pdf->textBox($x, $y, $w * 0.23, $h, $texto, $aFont, 'T', 'L', 1, '', true, 0, 0, false);
+        $this->pdf->textBox($x, $y, $w * 0.23, $h, $texto, $aFont, 'T', 'L', 0, '', true, 0, 0, false);
         $x += $w * 0.28; // COLUNA SÉRIE/NRO.DOCUMENTO DA DIREITA
         $texto = $descr3;
         $aFont = $this->formatPadrao;
@@ -2876,7 +2876,7 @@ class Dacte extends DaCommon
             $x += $w * 0.09; // COLUNA CNPJ/CHAVE/OBS
             $texto = $descr2;
             $aFont = $this->formatPadrao;
-            $this->pdf->textBox($x + $w*0.02, $y, $w * 0.23, $h, $texto, $aFont, 'T', 'L', 1, '', true, 0, 0, false);
+            $this->pdf->textBox($x + $w*0.02, $y, $w * 0.23, $h, $texto, $aFont, 'T', 'L', 0, '', true, 0, 0, false);
             $x += $w * 0.28;
             $texto = $descr3;
             $aFont = $this->formatPadrao;
