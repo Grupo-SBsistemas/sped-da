@@ -2409,7 +2409,7 @@ class Dacte extends DaCommon
             if (count($this->arrayNFe) % 2 != 0) {
                 $h = $h + 3.5;
             } // Caso tenha apenas 1 registro na ultima linha
-            $texto = 'DOCUMENTOS ORIGINÁRIOS - CONTINUACÃO';
+            $texto = 'DOCUMENTOS ORIGINÁRIOS - CONTINUACÃOB';
             $aFont = $this->formatPadrao;
             $this->pdf->textBox($x, $y, $w, $h, $texto, $aFont, 'T', 'C', 0, '');
             $yCont = $y;
@@ -2858,7 +2858,7 @@ class Dacte extends DaCommon
             if (count($this->arrayNFe) % 2 != 0) {
                 $h = $h + 3.5;
             } // Caso tenha apenas 1 registro na ultima linha
-            $texto = 'DOCUMENTOS ORIGINÁRIOS - CONTINUACÃO';
+            $texto = 'DOCUMENTOS ORIGINÁRIOS - CONTINUACÃOA';
             $aFont = $this->formatPadrao;
             $y +=3;
             $this->pdf->line($x, $y, $maxW, $y);
@@ -2900,7 +2900,7 @@ class Dacte extends DaCommon
             $texto = $descr1;
             $aFont = $this->formatPadrao;
             $this->pdf->textBox($x, $y, $w * 0.10, $h, $texto, $aFont, 'T', 'L', 0, '', true, 0, 0, false);
-            $x += $w * 0.08;
+            $x += $w * 0.09;
             $texto = $descr2;
             $aFont = $this->formatPadrao;
             $this->pdf->textBox($x, $y, $w * 0.23, $h, $texto, $aFont, 'T', 'L', 0, '', true, 0, 0, false);
@@ -2909,14 +2909,13 @@ class Dacte extends DaCommon
             $aFont = $this->formatPadrao;
             $this->pdf->textBox($x, $y, $w * 0.13, $h, $texto, $aFont, 'T', 'L', 0, '', true, 0, 0, false);
             $auxX = $oldX;
-            $yIniDados += 3;
-            $oldIni = $yIniDados;
+
+            $oldIni = $yIniDados += 3;
             while ($contador < (count($this->arrayNFe))) {
                 if ($contador % (116 * ($i - 1)) == 0) {
 //                    $contador++;
                     break;
                 }
-
                 $tp = 'NF-e';
                 $chaveNFe = $this->arrayNFe[$contador];
                 $numNFe = substr($chaveNFe, 25, 9);
@@ -2932,7 +2931,7 @@ class Dacte extends DaCommon
                     'size' => $this->default_size,
                     'style' => '');
                 $this->pdf->textBox($auxX, $yIniDados, $w * 0.10, $h, $texto, $aFont, 'T', 'L', 0, '', true, 0, 0, false);
-                $auxX += $w * 0.07;
+                $auxX += $w * 0.09;
                 $texto = $chaveNFe;
                 $aFont = array(
                     'font' => $this->fontePadrao,
@@ -2948,6 +2947,7 @@ class Dacte extends DaCommon
                 $this->pdf->textBox($auxX, $yIniDados, $w * 0.30, $h, $texto, $aFont, 'T', 'L', 0, '', true, 0, 0, false);
                 $auxX += $w * 0.12;
                 $contador++;
+
             }
             $this->pdf->line($maxW * .5, $oldIni, $maxW*.5, $yIniDados+3.5);
         }
