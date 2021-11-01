@@ -2881,7 +2881,7 @@ class Dacte extends DaCommon
             $texto = $descr3;
             $aFont = $this->formatPadrao;
             $this->pdf->textBox($x, $y, $w * 0.13, $h, $texto, $aFont, 'T', 'L', 0, '', true, 0, 0, false);
-            $x += $w * 0.14;
+            $x += $w * 0.12;
             if ($this->modal == '1') {
                 if ($this->lota == 1) {
 
