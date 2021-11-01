@@ -1954,14 +1954,14 @@ class Dacte extends DaCommon
             $this->pdf->textBox($auxX, $yIniDados, $w * 0.14, $h, $texto, $aFont, 'T', 'L', 0, '', true, 0, 0, false);
             $texto = $valor;
             if ($auxX != $oldX) {
-                $auxX += $w * 0.12;
+                $auxX += $w * 0.14;
             } else {
                 $auxX = $w*.14;
             }
             //$auxX += $w * 0.12;
             $aFont = $this->formatPadrao;
             $this->pdf->textBox($auxX, $yIniDados, $w * 0.14, $h, $texto, $aFont, 'T', 'L', 0, '', true, 0, 0, false);
-            $auxX += $w * 0.12;
+            $auxX += $w * 0.14;
         }
     }
 
