@@ -16,6 +16,8 @@ namespace NFePHP\DA\MDFe;
  */
 
 use Com\Tecnick\Barcode\Barcode;
+use DateTime;
+use DateTimeZone;
 use NFePHP\DA\Legacy\Dom;
 use NFePHP\DA\Legacy\Pdf;
 use NFePHP\DA\Common\DaCommon;
@@ -827,7 +829,8 @@ class Damdfe extends DaCommon
         if (is_object($this->mdfeProc)) {
             $texto = (new \DateTime($this->dhRecbto))->format('d/m/Y H:i:s');
         } else {
-            $texto = 'DAMDFE impresso em contingência - ' . date('d/m/Y   H:i:s', -3);
+            $date = new DateTime("now", new DateTimeZone('America/Sao_Paulo'));
+            $texto = 'DAMDFE impresso em contingência - ' . $date->format("d/m/Y   H:i:s");
         }
         $this->pdf->textBox($x, $y + 4, $maxW / 2, 8, $texto, $aFont, 'T', 'L', 0, '');
 
