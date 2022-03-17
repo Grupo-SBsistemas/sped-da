@@ -925,13 +925,8 @@ class Dacte extends DaCommon
 
         if ($this->tpEmis == 5 || $this->tpEmis == 7 || $this->tpEmis == 8) {
             $texto = "";
-            if ($this->tpEmis == 5 || $this->tpEmis == 7) {
-                $chaveContingencia = $this->geraChaveAdicCont();
-                $this->pdf->code128($x + 20, $y1 + 10, $chaveContingencia, $bW * .9, $bH / 2);
-            } else {
-                $chaveContingencia = $this->getTagValue($this->protCTe, "nProt");
-                $this->pdf->Code128($x + 40, $y1 + 10, $chaveContingencia, $bW * .4, $bH / 2);
-            }
+            $chaveContingencia = $this->geraChaveAdicCont();
+            $this->pdf->code128($x + 20, $y1 + 10, $chaveContingencia, $bW * .9, $bH / 2);
             //codigo de barras
         }
         $aFont = array(
