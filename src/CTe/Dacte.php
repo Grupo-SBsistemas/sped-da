@@ -1725,7 +1725,7 @@ class Dacte extends DaCommon
             'size' => $this->default_size,
             'style' => '');
         $this->pdf->textBox($x + 8, $y, $w, $h, $texto, $aFont, 'T', 'L', 0, '', true, 0, 0, false);
-        $texto = number_format($qCarga, 3, ",", ".");
+        $texto = number_format($qCarga, 2, ",", ".");
         $aFont = array(
             'font' => $this->fontePadrao,
             'size' => $this->default_size,
@@ -1740,7 +1740,7 @@ class Dacte extends DaCommon
             if ($this->getTagValue($infQ, "cUnid") == '03' && $this->getTagValue($infQ, "tpMed") !=  "UNIDADE") {
                 $qCarga = (float)$this->getTagValue($infQ, "qCarga");
                 $texto = $this->getTagValue($infQ, "tpMed");
-                $texto2 = number_format($qCarga, 3, ",", ".");
+                $texto2 = number_format($qCarga, 2, ",", ".");
                 break;
             }
         }
@@ -1773,7 +1773,7 @@ class Dacte extends DaCommon
                 $qCarga += (float)$this->getTagValue($infQ, "qCarga");
             }
         }
-        $texto = !empty($qCarga) ? number_format($qCarga, 3, ",", ".") : '';
+        $texto = !empty($qCarga) ? number_format($qCarga, 2, ",", ".") : '';
         $aFont = array(
             'font' => $this->fontePadrao,
             'size' => $this->default_size,
@@ -1790,7 +1790,7 @@ class Dacte extends DaCommon
                 $qCarga += (float)$this->getTagValue($infQ, "qCarga");
             }
         }
-        $texto = !empty($qCarga) ? number_format($qCarga, 3, ",", ".") : '';
+        $texto = !empty($qCarga) ? number_format($qCarga, 2, ",", ".") : '';
         $aFont = array(
             'font' => $this->fontePadrao,
             'size' => $this->default_size,
@@ -1807,7 +1807,7 @@ class Dacte extends DaCommon
                 $qCarga += (float)$this->getTagValue($infQ, "qCarga");
             }
         }
-        $texto = !empty($qCarga) ? number_format($qCarga, 3, ",", ".") : '';
+        $texto = !empty($qCarga) ? number_format($qCarga, 2, ",", ".") : '';
         $aFont = array(
             'font' => $this->fontePadrao,
             'size' => $this->default_size,
