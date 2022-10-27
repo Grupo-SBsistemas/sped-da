@@ -1878,35 +1878,35 @@ class Dacte extends DaCommon
         $y += 1;
         $texto = 'COMPONENTES DO VALOR DA PRESTAÇÃO DO SERVIÇO';
         $aFont = $this->formatPadrao;
-        $this->pdf->textBox($x, $y, $w, $h, $texto, $aFont, 'T', 'C', 0, '');
+        $this->pdf->textBox($x, $y, $w, $h, $texto, $aFont, 'T', 'C', 0, ''); // CERTO
         $y += 3.4;
         $texto = 'NOME';
         $aFont = $this->formatPadrao;
-        $this->pdf->textBox($x, $y, $w * 0.14, $h, $texto, $aFont, 'T', 'L', 0, '', true, 0, 0, true);
+        $this->pdf->textBox($x, $y, $w * 0.14, $h, $texto, $aFont, 'T', 'L', 0, '', true, 0, 0); // ERRADO
         $yIniDados = $y;
         $x = $w * 0.14;
         $texto = 'VALOR';
         $aFont = $this->formatPadrao;
-        $this->pdf->textBox($x, $y, $w * 0.14, $h, $texto, $aFont, 'T', 'L', 0, '', true, 0, 0, true);
+        $this->pdf->textBox($x, $y, $w * 0.14, $h, $texto, $aFont, 'T', 'L', 0, '', true, 0, 0);
         $x = $w * 0.28;
         $texto = 'NOME';
         $aFont = $this->formatPadrao;
-        $this->pdf->textBox($x, $y, $w * 0.14, $h, $texto, $aFont, 'T', 'L', 0, '', true, 0, 0, true);
+        $this->pdf->textBox($x, $y, $w * 0.14, $h, $texto, $aFont, 'T', 'L', 0, '', true, 0, 0);
         $x = $w * 0.42;
         $texto = 'VALOR';
         $aFont = $this->formatPadrao;
 
-        $this->pdf->textBox($x, $y, $w * 0.14, $h, $texto, $aFont, 'T', 'L', 0, '', true, 0, 0, true);
+        $this->pdf->textBox($x, $y, $w * 0.14, $h, $texto, $aFont, 'T', 'L', 0, '', true, 0, 0);
         $x = $w * 0.56;
         $texto = 'NOME';
 
         $aFont = $this->formatPadrao;
-        $this->pdf->textBox($x, $y, $w * 0.14, $h, $texto, $aFont, 'T', 'L', 0, '', true, 0, 0, true);
+        $this->pdf->textBox($x, $y, $w * 0.14, $h, $texto, $aFont, 'T', 'L', 0, '', true, 0, 0);
         $x = $w * 0.70;
         $texto = 'VALOR';
 
         $aFont = $this->formatPadrao;
-        $this->pdf->textBox($x, $y, $w * 0.14, $h, $texto, $aFont, 'T', 'L', 0, '', true, 0, 0, true);
+        $this->pdf->textBox($x, $y, $w * 0.14, $h, $texto, $aFont, 'T', 'L', 0, '', true, 0, 0);
         $x = $w * 0.84;
 
         $texto = 'VALOR TOTAL DO SERVIÇO';
