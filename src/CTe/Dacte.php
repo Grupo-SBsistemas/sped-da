@@ -1500,7 +1500,7 @@ class Dacte extends DaCommon
         $texto = 'MUNICÍPIO';
         $aFont = $this->formatPadrao;
         $this->pdf->textBox($x, $y, $w, $h, $texto, $aFont, 'T', 'L', 0, '', true, 0, 0, false);
-        if (isset($this->enderExped)) {
+        if (isset($this->enderReceb)) {
             $texto = $this->getTagValue($this->enderReceb, "xMun") . ' - ';
             $texto .= $this->getTagValue($this->enderReceb, "UF");
         } else {
