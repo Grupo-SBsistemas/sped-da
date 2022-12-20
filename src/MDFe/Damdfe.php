@@ -978,8 +978,7 @@ class Damdfe extends DaCommon
             foreach ($this->seg as $s) {
                 $nApol = $s->getElementsByTagName('nApol')->item(0)->nodeValue ?? "";
                 $nAver = $s->getElementsByTagName('nAver')->item(0)->nodeValue ?? "";
-                // Ignora se tem mais de 20
-                if (strlen(strval($nApol)) != 20 || strlen(strval($nAver)) != 40) {
+                if (strlen(strval($nAver)) != 40) {
                     continue;
                 }
                 $resp_cnpj = $s->getElementsByTagName("CNPJ")->item(0)->nodeValue ?? null;
