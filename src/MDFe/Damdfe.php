@@ -975,6 +975,10 @@ class Damdfe extends DaCommon
 
             $altura = $altura_placa > $altura_condutor ? $altura_placa : $altura_condutor;
 
+            // Dia 22/12/2022  ->  Conversei com o andré sobre esta regra pois teve reclação de cliette.
+            // Foi feito para mostrar só uma observação para não termos que ficar fazendo 2+ páginas de pdf.
+            // Atenção quando for corrigir só o break não iria resolver (isso tira mais que uma tag seg)
+            // Se for pegar todos dentro de mesmo seguro tem que mudar a lógica para pegar o item(X) em vez de item(0)
             foreach ($this->seg as $s) {
                 $nApol = $s->getElementsByTagName('nApol')->item(0)->nodeValue ?? "";
                 $nAver = $s->getElementsByTagName('nAver')->item(0)->nodeValue ?? "";
