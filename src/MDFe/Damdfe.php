@@ -1033,125 +1033,122 @@ class Damdfe extends DaCommon
             $y = $altura += 8;
             $yold = $y;
             $x2 = round($maxW / 2, 0);
-            $valesPedagios = 1;
-            $temVales = false;
+
+            // Vale Pedágio
             if ($this->valePed != "" && $this->valePed->length > 0) {
-                $valesPedagios = $this->valePed->length;
+
+                // $valesPedagios = $this->valePed->length;
                 $valesPedagios = 1; // feito pois só vai imprimir o primeiro vale pedágio.
-                $temVales = true;
-            }
-            $tamanho = ($valesPedagios * 7.5);
-            if (!$temVales) {
-                $valesPedagios = 0;
-            }
-            $this->pdf->textBox($x1, $y, $x2, 11 + $tamanho / 2, '', $this->baseFont, 'T', 'L', 0);
-            $texto = 'Vale Pedágio';
-            $aFont = array('font' => $this->fontePadrao, 'size' => 8, 'style' => 'B');
-            $this->pdf->textBox($x1, $y, $x2, 8, $texto, $aFont, 'T', 'L', 0, '', false);
-            $y += 5;
-            $this->pdf->setLineWidth(0.1);
-            $this->pdf->line($x1, $y + 4, $x2, $y + 4);
+                $tamanho = ($valesPedagios * 7.5);
 
-            $x2 = ($x2 / 3);
-            $this->pdf->textBox($x1, $y, $x2 - 3, 6 + ($tamanho / 2), '', $this->baseFont, 'T', 'L', 0);
-            $texto = 'Responsável';
-            $aFont = array('font' => $this->fontePadrao, 'size' => 8, 'style' => '');
-            $this->pdf->textBox($x1, $y, $x2 - 4, 8, $texto, $aFont, 'T', 'L', 0, '', false);
-            $altura = $y;
-            for ($i = 0; $i < $valesPedagios; $i++) {
-                $altura += 4;
-                $pgNode = $this->valePed->item($i)->getElementsByTagName('CNPJPg');
-                $texto = $pgNode->length == 0 ? '' : $this->formatField(str_pad($pgNode->item(0)->nodeValue, 14, '0', STR_PAD_LEFT), '##.###.###/####-##');
-                $aFont = array('font' => $this->fontePadrao, 'size' => 8, 'style' => '');
-                $this->pdf->textBox($x1, $altura, $x2 - 5, 10, $texto, $aFont, 'T', 'L', 0, '', false);
-            }
-            $x1 += $x2 - 3;
-            $this->pdf->textBox($x1, $y, $x2 - 3, 6 + ($tamanho / 2), '', $this->baseFont, 'T', 'L', 0);
-            $texto = 'Fornecedora';
-            $aFont = array('font' => $this->fontePadrao, 'size' => 8, 'style' => '');
-            $this->pdf->textBox($x1, $y, $x2 - 4, 8, $texto, $aFont, 'T', 'L', 0, '', false);
-            $altura = $y;
+                $this->pdf->textBox($x1, $y, $x2, 11 + $tamanho / 2, '', $this->baseFont, 'T', 'L', 0);
+                $texto = 'Vale Pedágio';
+                $aFont = array('font' => $this->fontePadrao, 'size' => 8, 'style' => 'B');
+                $this->pdf->textBox($x1, $y, $x2, 8, $texto, $aFont, 'T', 'L', 0, '', false);
+                $y += 5;
+                $this->pdf->setLineWidth(0.1);
+                $this->pdf->line($x1, $y + 4, $x2, $y + 4);
 
-            for ($i = 0; $i < $valesPedagios; $i++) {
-                $altura += 4;
-                $pgNode = $this->valePed->item($i)->getElementsByTagName('CNPJForn');
-                $texto = $pgNode->length == 0 ? '' : $this->formatField(str_pad($pgNode->item(0)->nodeValue, 14, '0', STR_PAD_LEFT), '##.###.###/####-##');
+                $x2 = ($x2 / 3);
+                $this->pdf->textBox($x1, $y, $x2 - 3, 6 + ($tamanho / 2), '', $this->baseFont, 'T', 'L', 0);
+                $texto = 'Responsável';
                 $aFont = array('font' => $this->fontePadrao, 'size' => 8, 'style' => '');
-                $this->pdf->textBox($x1, $altura, $x2 - 3, 10, $texto, $aFont, 'T', 'L', 0, '', false);
-            }
-            $x1 += $x2 - 3;
-            $this->pdf->textBox($x1, $y, $x2 + 6, 6 + ($tamanho / 2), '', $this->baseFont, 'T', 'L', 0);
-            $texto = 'Nº Comprovante';
-            $aFont = array('font' => $this->fontePadrao, 'size' => 8, 'style' => '');
-            $this->pdf->textBox($x1, $y, $x2 + 6, 8, $texto, $aFont, 'T', 'L', 0, '', false);
-            $altura = $y;
-            for ($i = 0; $i < $valesPedagios; $i++) {
-                $altura += 4;
-                ($this->valePed->item($i)->getElementsByTagName('nCompra'));
-                $texto = $this->valePed->item($i)->getElementsByTagName('nCompra')->item(0)->nodeValue;
+                $this->pdf->textBox($x1, $y, $x2 - 4, 8, $texto, $aFont, 'T', 'L', 0, '', false);
+                $altura = $y;
+                for ($i = 0; $i < $valesPedagios; $i++) {
+                    $altura += 4;
+                    $pgNode = $this->valePed->item($i)->getElementsByTagName('CNPJPg');
+                    $texto = $pgNode->length == 0 ? '' : $this->formatField(str_pad($pgNode->item(0)->nodeValue, 14, '0', STR_PAD_LEFT), '##.###.###/####-##');
+                    $aFont = array('font' => $this->fontePadrao, 'size' => 8, 'style' => '');
+                    $this->pdf->textBox($x1, $altura, $x2 - 5, 10, $texto, $aFont, 'T', 'L', 0, '', false);
+                }
+                $x1 += $x2 - 3;
+                $this->pdf->textBox($x1, $y, $x2 - 3, 6 + ($tamanho / 2), '', $this->baseFont, 'T', 'L', 0);
+                $texto = 'Fornecedora';
                 $aFont = array('font' => $this->fontePadrao, 'size' => 8, 'style' => '');
-                $this->pdf->textBox($x1, $altura, $x2 + 6, 10, $texto, $aFont, 'T', 'L', 0, '', false);
-            }
-            if (!$temVales) {
-                $altura += 4;
+                $this->pdf->textBox($x1, $y, $x2 - 4, 8, $texto, $aFont, 'T', 'L', 0, '', false);
+                $altura = $y;
+
+                for ($i = 0; $i < $valesPedagios; $i++) {
+                    $altura += 4;
+                    $pgNode = $this->valePed->item($i)->getElementsByTagName('CNPJForn');
+                    $texto = $pgNode->length == 0 ? '' : $this->formatField(str_pad($pgNode->item(0)->nodeValue, 14, '0', STR_PAD_LEFT), '##.###.###/####-##');
+                    $aFont = array('font' => $this->fontePadrao, 'size' => 8, 'style' => '');
+                    $this->pdf->textBox($x1, $altura, $x2 - 3, 10, $texto, $aFont, 'T', 'L', 0, '', false);
+                }
+                $x1 += $x2 - 3;
+                $this->pdf->textBox($x1, $y, $x2 + 6, 6 + ($tamanho / 2), '', $this->baseFont, 'T', 'L', 0);
+                $texto = 'Nº Comprovante';
+                $aFont = array('font' => $this->fontePadrao, 'size' => 8, 'style' => '');
+                $this->pdf->textBox($x1, $y, $x2 + 6, 8, $texto, $aFont, 'T', 'L', 0, '', false);
+                $altura = $y;
+                for ($i = 0; $i < $valesPedagios; $i++) {
+                    $altura += 4;
+                    ($this->valePed->item($i)->getElementsByTagName('nCompra'));
+                    $texto = $this->valePed->item($i)->getElementsByTagName('nCompra')->item(0)->nodeValue;
+                    $aFont = array('font' => $this->fontePadrao, 'size' => 8, 'style' => '');
+                    $this->pdf->textBox($x1, $altura, $x2 + 6, 10, $texto, $aFont, 'T', 'L', 0, '', false);
+                }
             }
         }
 
         // CIOT
-        $x1 = round($maxW / 2, 0) + 7;
-        $y = $yold;
-        $x2 = round($maxW / 2, 0);
-        $texto = 'CIOT';
-        $aFont = array('font' => $this->fontePadrao, 'size' => 8, 'style' => 'B');
-        $this->pdf->textBox($x1, $y, $x2, 8, $texto, $aFont, 'T', 'L', 0, '', false);
-        $this->pdf->SetLineWidth(0.1);
-        $this->pdf->line($x1, $y + 9, $x2 * 2, $y + 9);
+        if ($this->infCIOT != null &&  $this->infCIOT->item(0) != null) {
+            $x1 = round($maxW / 2, 0) + 7;
+            $y = $yold;
+            $x2 = round($maxW / 2, 0);
+            $texto = 'CIOT';
+            $aFont = array('font' => $this->fontePadrao, 'size' => 8, 'style' => 'B');
+            $this->pdf->textBox($x1, $y, $x2, 8, $texto, $aFont, 'T', 'L', 0, '', false);
+            $this->pdf->SetLineWidth(0.1);
+            $this->pdf->line($x1, $y + 9, $x2 * 2, $y + 9);
 
-        $y += 5;
-        $old_x2 = $x2;
-        $x2 = ($maxW / 6);
+            $y += 5;
+            $old_x2 = $x2;
+            $x2 = ($maxW / 6);
 
-        $this->pdf->textBox($x1, $y, $x2, 33 + ($tamanho / 2), '', $this->baseFont, 'T', 'L', 0);
-        $texto = 'Responsável';
-        $aFont = array('font' => $this->fontePadrao, 'size' => 8, 'style' => '');
-        $this->pdf->textBox($x1, $y, $x2, 8, $texto, $aFont, 'T', 'L', 0, '', false);
-        $yold = $y;
+            $this->pdf->textBox($x1, $y, $x2, 33 + ($tamanho / 2), '', $this->baseFont, 'T', 'L', 0);
+            $texto = 'Responsável';
+            $aFont = array('font' => $this->fontePadrao, 'size' => 8, 'style' => '');
+            $this->pdf->textBox($x1, $y, $x2, 8, $texto, $aFont, 'T', 'L', 0, '', false);
+            $yold = $y;
 
-        foreach ($this->infCIOT as $k => $cio) {
-            $y += 4;
-            // AQUI
-            $cnpj = $cio->getElementsByTagName("CNPJ")->item(0)->nodeValue ?? null;
-            $cpf = $cio->getElementsByTagName("CPF")->item(0)->nodeValue ?? null;
+            foreach ($this->infCIOT as $k => $cio) {
+                $y += 4;
+                // AQUI
+                $cnpj = $cio->getElementsByTagName("CNPJ")->item(0)->nodeValue ?? null;
+                $cpf = $cio->getElementsByTagName("CPF")->item(0)->nodeValue ?? null;
 
-            if ($cnpj) {
-                $doc = $this->formatField(str_pad($cnpj, 14, '0', STR_PAD_LEFT), '##.###.###/####-##');
-            } else {
-                $doc = $this->formatField(str_pad($cpf, 9, '0', STR_PAD_LEFT), '###.###.###-##');
+                if ($cnpj) {
+                    $doc = $this->formatField(str_pad($cnpj, 14, '0', STR_PAD_LEFT), '##.###.###/####-##');
+                } else {
+                    $doc = $this->formatField(str_pad($cpf, 9, '0', STR_PAD_LEFT), '###.###.###-##');
+                }
+
+                $texto = $doc;
+                $aFont = array('font' => $this->fontePadrao, 'size' => 8, 'style' => '');
+                $this->pdf->textBox($x1, $y, $x2 - 1, 10, $texto, $aFont, 'T', 'L', 0, '', false);
+
+                if ($k != 0) {
+                    $this->pdf->SetLineWidth(0.03);
+                    $this->pdf->line($x1, $y, $old_x2 * 2, $y);
+                }
             }
 
-            $texto = $doc;
-            $aFont = array('font' => $this->fontePadrao, 'size' => 8, 'style' => '');
-            $this->pdf->textBox($x1, $y, $x2 - 1, 10, $texto, $aFont, 'T', 'L', 0, '', false);
 
-            if ($k != 0) {
-                $this->pdf->SetLineWidth(0.03);
-                $this->pdf->line($x1, $y, $old_x2 * 2, $y);
+            $y = $yold;
+            $x1 += $x2;
+            $x2 = $x2 * 2;
+            $this->pdf->textBox($x1, $y, $x2, 33 + ($tamanho / 2), '', $this->baseFont, 'T', 'L', 0);
+            $texto = 'Nº CIOT';
+            $aFont = array('font' => $this->fontePadrao, 'size' => 8, 'style' => '');
+            $this->pdf->textBox($x1, $y, $x2, 8, $texto, $aFont, 'T', 'L', 0, '', false);
+            foreach ($this->infCIOT as $k => $cio) {
+                $y += 4;
+                $texto = $cio->getElementsByTagName("CIOT")->item(0)->nodeValue ?? "";
+                $aFont = array('font' => $this->fontePadrao, 'size' => 8, 'style' => '');
+                $this->pdf->textBox($x1, $y, $x2 - 1, 10, $texto, $aFont, 'T', 'L', 0, '', false);
             }
-        }
-
-
-        $y = $yold;
-        $x1 += $x2;
-        $x2 = $x2 * 2;
-        $this->pdf->textBox($x1, $y, $x2, 33 + ($tamanho / 2), '', $this->baseFont, 'T', 'L', 0);
-        $texto = 'Nº CIOT';
-        $aFont = array('font' => $this->fontePadrao, 'size' => 8, 'style' => '');
-        $this->pdf->textBox($x1, $y, $x2, 8, $texto, $aFont, 'T', 'L', 0, '', false);
-        foreach ($this->infCIOT as $k => $cio) {
-            $y += 4;
-            $texto = $cio->getElementsByTagName("CIOT")->item(0)->nodeValue ?? "";
-            $aFont = array('font' => $this->fontePadrao, 'size' => 8, 'style' => '');
-            $this->pdf->textBox($x1, $y, $x2 - 1, 10, $texto, $aFont, 'T', 'L', 0, '', false);
         }
 
 
