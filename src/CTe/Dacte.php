@@ -3941,12 +3941,14 @@ class Dacte extends DaCommon
         //$this->wAdic com a largura do campo
         //$this->textoAdic com o texto completo do campo
         $y += 1;
-        $y1 = $y;
+        $y1 = $y + 3;
         $aFont = $this->formatPadrao;
         foreach ($this->textoAdic as $textoAdic) {
-            $y1 += 3;
             $texto = $this->getTagValue($textoAdic, "xTexto");
             $this->pdf->textBox($x, $y1, $w * .62, $h - 3, $texto, $aFont, 'T', 'L', 0, '', false);
+            
+            $lines = ceil(strlen($texto) / 79);
+            $y1 += 3 + ($lines - 1) * 2.6;
         }
 
         $x += 98.5;
