@@ -440,7 +440,7 @@ class Dacte extends DaCommon
             $y += 11;
             $x = $xInic;
             $r = $this->docCompl($x, $y);
-            $y += 80;
+            $y += 17;
             $x = $xInic;
             $r = $this->compValorServ($x, $y);
             $y += 25;
