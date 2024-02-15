@@ -52,6 +52,7 @@ class Dacte extends DaCommon
     protected $seg;
     protected $modal;
     protected $rodo;
+    protected $RNTRC;
     protected $moto;
     protected $veic;
     protected $ferrov;
@@ -390,6 +391,7 @@ class Dacte extends DaCommon
                     $y += 25.9;
                     $x = $xInic;
                     $this->pdf->Line($x, $y, $maxW - $margDir + 3, $y);
+                    $this->RNTRC = $this->getTagValue($this->rodo, "RNTRC");
                     $r = $this->modalRod($x, $y);
                     break;
                 case '2':
@@ -425,6 +427,8 @@ class Dacte extends DaCommon
             if ($this->modal == '1') {
                 if ($this->lota == 1) {
                     $y += 37;
+                } elseif (isset($this->RNTRC) && $this->RNTRC != 0) {
+                    $y += 12.3;
                 } else {
                     $y += 8.9;
                 }
@@ -3283,20 +3287,25 @@ class Dacte extends DaCommon
             $maxW = $this->wPrint - $this->wCanhoto;
         }
         $w = $maxW;
+        $x2 = $maxW/2;
         $h = 3;
         $y += 1;
 
         $texto = 'DADOS ESPECÍFICOS DO MODAL RODOVIÁRIO';
-        $aFont = $this->formatPadrao;
-        $this->pdf->textBox($x, $y, $w, $h * 3.2, $texto, $aFont, 'T', 'C', 0, '');
-        if ($this->lota == 1) {
-        }
+        $this->pdf->textBox($x, $y, $w, $h * 3.2, $texto, $this->formatPadrao, 'T', 'C', 0, '');
         $y += 3.4;
+
+        if (isset($this->RNTRC) && $this->RNTRC != 0) {
+            $texto = 'RNTRC da Empresa';
+            $this->pdf->textBox($x2 - 17, $y, $w, $h, $texto, $this->formatPadrao, 'T', 'L', 0, '', true, 0, 0, false);
+            $texto = $this->RNTRC;
+            $this->pdf->textBox($x2 + 8, $y, $w, $h, $texto, $this->formatNegrito, 'T', 'L', 0, '', true, 0, 0, false);
+            $y += 3.4;
+        }
 
         $x += $w * 0.23;
         $texto = 'ESTE CONHECIMENTO DE TRANSPORTE ATENDE À LEGISLAÇÃO DE TRANSPORTE RODOVIÁRIO EM VIGOR';
-        $aFont = $this->formatPadrao;
-        $this->pdf->textBox($x, $y, $w * 0.50, $h, $texto, $aFont, 'T', 'C', 0, '');
+        $this->pdf->textBox($x, $y, $w * 0.50, $h, $texto, $this->formatPadrao, 'T', 'C', 0, '');
     }
 
     /**
