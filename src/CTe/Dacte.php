@@ -1705,32 +1705,32 @@ class Dacte extends DaCommon
         $y += 1;
         $w = $maxW;
         $h = 17;
-        $texto = 'PRODUTO PREDOMINANTE';
         $aFont = array(
             'font' => $this->fontePadrao,
             'size' => $this->default_size,
             'style' => ''
         );
+
+        $texto = 'PRODUTO PREDOMINANTE';
         $this->pdf->textBox($x, $y, $w, $h, $texto, $aFont, 'T', 'L', 0, '', true, 0, 0, false);
         $texto = $this->getTagValue($this->infCarga, "proPred");
-        $aFont = $this->formatNegrito;
-        $this->pdf->textBox($x, $y + 2.8, $w, $h, $texto, $aFont, 'T', 'L', 0, '', true, 0, 0, false);
+        $this->pdf->textBox($x, $y + 2.8, $w, $h, $texto, $this->formatNegrito, 'T', 'L', 0, '', true, 0, 0, false);
         $x = $w * 0.33;
-        $aFont = $this->formatPadrao;
+
         $texto = 'OUTRAS CARACTERÍSTICAS DA CARGA';
-        $this->pdf->textBox($x + 17, $y, $w, $h, $texto, $aFont, 'T', 'L', 0, '', true, 0, 0, false);
+        $this->pdf->textBox($x + 17, $y, $w, $h, $texto, $this->formatPadrao, 'T', 'L', 0, '', true, 0, 0, false);
         $texto = $this->getTagValue($this->infCarga, "xOutCat");
-        $aFont = $this->formatNegrito;
-        $this->pdf->textBox($x + 1, $y + 3, $w, $h, $texto, $aFont, 'T', 'L', 0, '', true, 0, 0, false);
+        $this->pdf->textBox($x + 17, $y + 3, $w, $h, $texto, $this->formatNegrito, 'T', 'L', 0, '', true, 0, 0, false);
         $x = $w * .66;
-        $aFont = $this->formatPadrao;
+
         $texto = 'VALOR TOTAL DA CARGA';
-        $this->pdf->textBox($x * 1.3, $y, $w * 0.18, $h, $texto, $aFont, 'T', 'L', 0, '', true, 0, 0, false);
+        $this->pdf->textBox($x * 1.3, $y, $w * 0.18, $h, $texto, $this->formatPadrao, 'T', 'L', 0, '', true, 0, 0, false);
         $texto = $this->getTagValue($this->infCarga, "vCarga") == "" ?
-            $this->getTagValue($this->infCarga, "vMerc") : $this->getTagValue($this->infCarga, "vCarga");
+            $this->getTagValue($this->infCarga, "vMerc") : 
+            $this->getTagValue($this->infCarga, "vCarga");
         $texto = number_format($texto, 2, ",", ".");
-        $aFont = $this->formatNegrito;
-        $this->pdf->textBox($x * 1.3, $y + 3, $w * 0.18, $h, $texto, $aFont, 'T', 'L', 0, '', true, 0, 0, false);
+        $this->pdf->textBox($x * 1.3, $y + 3, $w * 0.18, $h, $texto, $this->formatPadrao, 'T', 'L', 0, '', true, 0, 0, false);
+        
         $y += 8;
         $x = $oldX;
 
