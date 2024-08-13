@@ -359,7 +359,7 @@ class Damdfe extends DaCommon
             }
             $h = 5;
             $w = $maxW - (2 * $x);
-            $this->pdf->setTextColor(90, 90, 90);
+            $this->pdf->setTextColor(179, 179, 179);
             $texto = "SEM VALOR FISCAL";
             $aFont = ['font' => $this->fontePadrao, 'size' => 48, 'style' => 'B'];
             $this->pdf->textBox($x, $yy, $w, $h, $texto, $aFont, 'C', 'C', 0, '');
@@ -376,7 +376,7 @@ class Damdfe extends DaCommon
             }
             $h = 5;
             $w = $maxW - (2 * $x);
-            $this->pdf->setTextColor(90, 90, 90);
+            $this->pdf->setTextColor(179, 179, 179);
             //indicar FALTA DO PROTOCOLO se MDFe não for em contingência
             if (($this->tpEmis == 2 || $this->tpEmis == 5)) {
                 //Contingência
@@ -586,7 +586,7 @@ class Damdfe extends DaCommon
             $y = $this->hPrint / 2 - $alttot / 2;
             $h = 15;
             $w = $maxW - (2 * $x);
-            $this->pdf->settextcolor(90, 90, 90);
+            $this->pdf->settextcolor(179, 179, 179);
             foreach ($resp['message'] as $msg) {
                 $aFont = ['font' => $this->fontePadrao, 'size' => 48, 'style' => 'B'];
                 $this->pdf->textBox($x, $y, $w, $h, $msg, $aFont, 'C', 'C', 0, '');
@@ -606,8 +606,8 @@ class Damdfe extends DaCommon
                 $texto = "SEM VALOR FISCAL";
                 $aFont = ['font' => $this->fontePadrao, 'size' => 48, 'style' => 'B'];
                 $this->pdf->textBox($x, $y, $w, $h, $texto, $aFont, 'C', 'C', 0, '');
-                $this->pdf->settextcolor(0, 0, 0);
             }
+            $this->pdf->settextcolor(0, 0, 0);
         }
         return $oldY + 8;
     }
@@ -833,7 +833,7 @@ class Damdfe extends DaCommon
         $this->pdf->textBox($x, $y, $maxW / 2, 8, $texto, $aFont, 'T', 'L', 0, '');
         $aFont = array('font' => $this->fontePadrao, 'size' => 10, 'style' => '');
         if (is_object($this->mdfeProc)) {
-            $texto = (new \DateTime($this->dhRecbto))->format('d/m/Y H:i:s');
+            $texto = $this->nProt . ' - ' . (new \DateTime($this->dhRecbto))->format('d/m/Y H:i:s');
         } else {
             $date = new DateTime("now", new DateTimeZone('America/Sao_Paulo'));
             $texto = 'DAMDFE impresso em contingência - ' . $date->format("d/m/Y   H:i:s");
