@@ -921,11 +921,11 @@ class Damdfe extends DaCommon
                  *
                  * @var \DOMElement $item
                  */
+                $altura += 4;
                 $DOMNodeList = $item->getElementsByTagName('RNTRC');
                 if ($DOMNodeList->length > 0) {
-                    $altura += 4;
                     $texto = $DOMNodeList->item(0)->nodeValue ?? '';
-                    $this->pdf->textBox($x1, $altura, $x2, 10, $texto, $aFont, 'T', 'C', 0, '', false);
+                    $this->pdf->textBox($x1, $altura, $x2, 10, $texto, $aFont, 'T', 'L', 0, '', false);
                 }
             }
 
