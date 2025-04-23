@@ -178,29 +178,36 @@ class Dacte extends DaCommon
             if (!empty($this->aquav)) {
                 $this->detCont = $this->aquav->getElementsByTagName("detCont");
             }
-            $tomador = $this->getTagValue($this->toma03, "toma");
-            //0-Remetente;1-Expedidor;2-Recebedor;3-Destinatário;4-Outros
-            switch ($tomador) {
-                case '0':
-                    $this->toma = $this->rem;
-                    $this->enderToma = $this->enderReme;
-                    break;
-                case '1':
-                    $this->toma = $this->exped;
-                    $this->enderToma = $this->enderExped;
-                    break;
-                case '2':
-                    $this->toma = $this->receb;
-                    $this->enderToma = $this->enderReceb;
-                    break;
-                case '3':
-                    $this->toma = $this->dest;
-                    $this->enderToma = $this->enderDest;
-                    break;
-                default:
-                    $this->toma = $this->toma4;
-                    $this->enderToma = $this->getTagValue($this->toma4, "enderToma");
-                    break;
+
+            // O tomador possui uma tag exclusiva no CTe Simplificado
+            if (in_array($this->tpCTe, [5, 6])){
+                $this->toma = $this->dom->getElementsByTagName("toma")->item(0);
+                $this->enderToma = $this->dom->getElementsByTagName("enderToma")->item(0);
+            } else {
+                $tomador = $this->getTagValue($this->toma03, "toma");
+                //0-Remetente;1-Expedidor;2-Recebedor;3-Destinatário;4-Outros
+                switch ($tomador) {
+                    case '0':
+                        $this->toma = $this->rem;
+                        $this->enderToma = $this->enderReme;
+                        break;
+                    case '1':
+                        $this->toma = $this->exped;
+                        $this->enderToma = $this->enderExped;
+                        break;
+                    case '2':
+                        $this->toma = $this->receb;
+                        $this->enderToma = $this->enderReceb;
+                        break;
+                    case '3':
+                        $this->toma = $this->dest;
+                        $this->enderToma = $this->enderDest;
+                        break;
+                    default:
+                        $this->toma = $this->toma4;
+                        $this->enderToma = $this->getTagValue($this->toma4, "enderToma");
+                        break;
+                }
             }
             $this->tpEmis = $this->getTagValue($this->ide, "tpEmis");
             $this->tpImp = $this->getTagValue($this->ide, "tpImp");
@@ -319,24 +326,26 @@ class Dacte extends DaCommon
         // FAZ O QUADRADO / CRUZ DO REMETENTE DESTINATARIO EXPEDIDOR E RECEBEDOR
         $this->pdf->line($x, $y, $maxW - $margDir, $y); // AQUIII
 
-        $y = $y + 1;
-        $r = $this->remetente($x, $y);
-        $x = $this->wPrint * 0.5 + 2;
+        if (!in_array($this->tpCTe, [5, 6])) {
+            $y = $y + 1;
+            $r = $this->remetente($x, $y);
+            $x = $this->wPrint * 0.5 + 2;
 
-        $this->pdf->line($x - 2, $y - 1, $x - 2, $y + 19);
+            $this->pdf->line($x - 2, $y - 1, $x - 2, $y + 19);
 
-        $r = $this->destinatario($x, $y);
-        $y += 19;
-        $x = $xInic;
-        $this->pdf->line($x, $y, $maxW - $margDir, $y);
+            $r = $this->destinatario($x, $y);
+            $y += 19;
+            $x = $xInic;
+            $this->pdf->line($x, $y, $maxW - $margDir, $y);
 
-        $r = $this->expedidor($x, $y);
-        $x = $this->wPrint * 0.5 + 2;
-        $this->pdf->line($x - 2, $y, $x - 2, $y + 20);
+            $r = $this->expedidor($x, $y);
+            $x = $this->wPrint * 0.5 + 2;
+            $this->pdf->line($x - 2, $y, $x - 2, $y + 20);
 
-        $r = $this->recebedor($x, $y);
-        $y += 20;
-        $x = $xInic;
+            $r = $this->recebedor($x, $y);
+            $y += 20;
+            $x = $xInic;
+        }
 
         $this->pdf->line($x, $y, $maxW - $margDir, $y);
 
@@ -619,7 +628,7 @@ class Dacte extends DaCommon
         $mun = $this->getTagValue($this->enderEmit, "xMun");
         $UF = $this->getTagValue($this->enderEmit, "UF");
         $xPais = $this->getTagValue($this->enderEmit, "xPais");
-        $texto = $lgr . ", " . $nro . " " .  $bairro . "\n" .
+        $texto = $lgr . ", " . $nro . " - " . $cpl . " " .  $bairro . "\n" .
             $mun . "/" . $UF . " - " . $CEP
             . "\n  Fone: " . $fone;
         $this->pdf->textBox($x1, $y1 + 4, $tw, 8, $texto, $aFont, 'T', 'C', 0, '', true);
@@ -1742,11 +1751,11 @@ class Dacte extends DaCommon
         $texto = 'VALOR TOTAL DA CARGA';
         $this->pdf->textBox($x * 1.3, $y, $w * 0.18, $h, $texto, $this->formatPadrao, 'T', 'L', 0, '', true, 0, 0, false);
         $texto = $this->getTagValue($this->infCarga, "vCarga") == "" ?
-            $this->getTagValue($this->infCarga, "vMerc") : 
+            $this->getTagValue($this->infCarga, "vMerc") :
             $this->getTagValue($this->infCarga, "vCarga");
         $texto = number_format($texto, 2, ",", ".");
         $this->pdf->textBox($x * 1.3, $y + 3, $w * 0.18, $h, $texto, $this->formatPadrao, 'T', 'L', 0, '', true, 0, 0, false);
-        
+
         $y += 8;
         $x = $oldX;
 
