@@ -148,7 +148,13 @@ class Dacte extends DaCommon
             } else {
                 $this->chaveCTeRef = $this->getTagValue($this->infCteAnu, "chCte");
             }
-            $this->vPrest = $this->dom->getElementsByTagName("vPrest")->item(0);
+            // Se for CTe Simplificado ou CTe Simplificado Substituto
+            if (in_array($this->tpCTe, [5, 6])){
+                $this->vPrest = $this->dom->getElementsByTagName("vTPrest")->item(0);
+                $this->total = $this->dom->getElementsByTagName("total")->item(0);
+            } else {
+                $this->vPrest = $this->dom->getElementsByTagName("vPrest")->item(0);
+            }
             $this->Comp = $this->dom->getElementsByTagName("Comp");
             $this->infNF = $this->dom->getElementsByTagName("infNF");
             $this->infNFe = $this->dom->getElementsByTagName("infNFe");
@@ -338,7 +344,7 @@ class Dacte extends DaCommon
         $r = $this->tomador($x, $y);
 
 
-        if ($this->tpCTe == '0') {
+        if ($this->tpCTe == '0' || $this->tpCTe == '5') {
             //Normal
             $y += 11;
             $this->pdf->line($x, $y, $maxW - $margDir, $y);
@@ -647,6 +653,12 @@ class Dacte extends DaCommon
                 break;
             case '3':
                 $texto = 'Substituto';
+                break;
+            case '5':
+                $texto = 'Simplificado';
+                break;
+            case '6':
+                $texto = 'Simplificado Substituto';
                 break;
             default:
                 $texto = 'ERRO ' . $tpCTe;
@@ -1959,7 +1971,11 @@ class Dacte extends DaCommon
         $texto = 'VALOR TOTAL DO SERVIÇO';
         $aFont = $this->formatPadrao;
         $this->pdf->textBox($x, $y, $w * 0.17, $h, $texto, $aFont, 'T', 'R', 0, '');
-        $texto = number_format($this->getTagValue($this->vPrest, "vTPrest"), 2, ",", ".");
+        if (in_array($this->tpCTe, [5, 6])){
+            $texto = number_format($this->getTagValue($this->total, "vTPrest"), 2, ",", ".");
+        } else {
+            $texto = number_format($this->getTagValue($this->vPrest, "vTPrest"), 2, ",", ".");
+        }
         $aFont = array(
             'font' => $this->fontePadrao,
             'size' => 10,
@@ -1971,7 +1987,11 @@ class Dacte extends DaCommon
         $texto = 'VALOR A RECEBER';
         $aFont = $this->formatPadrao;
         $this->pdf->textBox($x, $y, $w * 0.17, $h, $texto, $aFont, 'T', 'R', 0, '');
-        $texto = number_format($this->getTagValue($this->vPrest, "vRec"), 2, ",", ".");
+        if (in_array($this->tpCTe, [5, 6])){
+            $texto = number_format($this->getTagValue($this->total, "vTRec"), 2, ",", ".");
+        } else {
+            $texto = number_format($this->getTagValue($this->vPrest, "vRec"), 2, ",", ".");
+        }
         $aFont = array(
             'font' => $this->fontePadrao,
             'size' => 10,
@@ -2594,9 +2614,14 @@ class Dacte extends DaCommon
             'style' => ''
         );
 
+        $nomeTag = 'chave';
+        if ($this->tpCTe == 5){
+            $nomeTag = 'chNFe';
+        }
+
         // Busca todos os documentos que podem ter no bloco para calcular o numero de paginas necessario
         foreach ($this->infNFe as $k => $d) {
-            $chaveNFe = $this->infNFe->item($k)->getElementsByTagName('chave')->item(0)->nodeValue;
+            $chaveNFe = $this->infNFe->item($k)->getElementsByTagName($nomeTag)->item(0)->nodeValue;
             $this->arrayNFe[] = $chaveNFe;
         }
 
@@ -3094,7 +3119,7 @@ class Dacte extends DaCommon
             $texto = 'DETALHAMENTO DO CT-E SUBSTITUÍDO';
             $descr1 = 'CHAVE DO CT-E SUBSTITUÍDO';
             $descr2 = 'VALOR SUBSTITUÍDO';
-        } else {
+        } else if ($this->tpCTe == 2) {
             $texto = 'DETALHAMENTO DO CT-E ANULADO';
             $descr1 = 'CHAVE DO CT-E ANULADO';
             $descr2 = 'VALOR ANULADO';
@@ -3209,7 +3234,11 @@ class Dacte extends DaCommon
             'style' => ''
         );
         $this->pdf->textBox($auxX, $yIniDados, $w, $h, $texto, $aFont, 'T', 'L', 0, '', true, 0, 0, false);
-        $texto = number_format($this->getTagValue($this->vPrest, "vTPrest"), 2, ",", ".");
+        if (in_array($this->tpCTe, [5, 6])){
+            $texto = number_format($this->getTagValue($this->total, "vTPrest"), 2, ",", ".");
+        } else {
+            $texto = number_format($this->getTagValue($this->vPrest, "vTPrest"), 2, ",", ".");
+        }
         $aFont = array(
             'font' => $this->fontePadrao,
             'size' => $this->default_size,
