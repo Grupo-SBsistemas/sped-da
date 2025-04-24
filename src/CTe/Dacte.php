@@ -53,6 +53,7 @@ class Dacte extends DaCommon
     protected $modal;
     protected $rodo;
     protected $RNTRC;
+    protected $det;
     protected $moto;
     protected $veic;
     protected $ferrov;
@@ -152,6 +153,7 @@ class Dacte extends DaCommon
             if (in_array($this->tpCTe, [5, 6])){
                 $this->vPrest = $this->dom->getElementsByTagName("vTPrest")->item(0);
                 $this->total = $this->dom->getElementsByTagName("total")->item(0);
+                $this->det = $this->dom->getElementsByTagName("det")->item(0);
             } else {
                 $this->vPrest = $this->dom->getElementsByTagName("vPrest")->item(0);
             }
@@ -1052,7 +1054,13 @@ class Dacte extends DaCommon
             'style' => ''
         );
         $this->pdf->textBox($x, $y, $w, $h, $texto, $aFont, 'T', 'L', 0, '', true, 0, 0, false);
-        $texto = $this->getTagValue($this->ide, "xMunIni") . ' - ' . $this->getTagValue($this->ide, "UFIni");
+
+        // Se for CTe Simplificado ou CTe Simplificado Substituto
+        if (in_array($this->tpCTe, [5, 6])){
+            $texto = $this->getTagValue($this->det, "xMunIni") . ' - ' . $this->getTagValue($this->ide, "UFIni");
+        } else {
+            $texto = $this->getTagValue($this->ide, "xMunIni") . ' - ' . $this->getTagValue($this->ide, "UFIni");
+        }
         $aFont = $this->formatNegrito;
         $this->pdf->textBox($x, $y + 3.5, $w, $h, $texto, $aFont, 'T', 'L', 0, '', true, 0, 0, false);
 
@@ -1067,7 +1075,13 @@ class Dacte extends DaCommon
             'style' => ''
         );
         $this->pdf->textBox($x, $y, $w, $h, $texto, $aFont, 'T', 'L', 0, '', true, 0, 0, false);
-        $texto = $this->getTagValue($this->ide, "xMunFim") . ' - ' . $this->getTagValue($this->ide, "UFFim");
+
+        // Se for CTe Simplificado ou CTe Simplificado Substituto
+        if (in_array($this->tpCTe, [5, 6])){
+            $texto = $this->getTagValue($this->det, "xMunFim") . ' - ' . $this->getTagValue($this->ide, "UFFim");
+        } else {
+            $texto = $this->getTagValue($this->ide, "xMunFim") . ' - ' . $this->getTagValue($this->ide, "UFFim");
+        }
         $aFont = $this->formatNegrito;
         $this->pdf->textBox($x, $y + 3.5, $w, $h, $texto, $aFont, 'T', 'L', 0, '', true, 0, 0, false);
 
