@@ -3146,6 +3146,10 @@ class Dacte extends DaCommon
             $texto = 'DETALHAMENTO DO CT-E ANULADO';
             $descr1 = 'CHAVE DO CT-E ANULADO';
             $descr2 = 'VALOR ANULADO';
+        } else if ($this->tpCTe == 6) {
+            $texto = 'DETALHAMENTO DO CT-E SIMPLIFICADO SUBSTITUÍDO';
+            $descr1 = 'CHAVE DO CT-E SUBSTITUÍDO';
+            $descr2 = 'VALOR SUBSTITUÍDO';
         }
         $aFont = $this->formatPadrao;
         $this->pdf->textBox($x, $y, $w, $h, $texto, $aFont, 'T', 'C', 0, '');
