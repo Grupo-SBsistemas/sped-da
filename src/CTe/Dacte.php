@@ -2237,7 +2237,13 @@ class Dacte extends DaCommon
         $cUF = $this->ide->getElementsByTagName('cUF')->item(0)->nodeValue;
         $CNPJ = "00000000000000" . $this->emit->getElementsByTagName('CNPJ')->item(0)->nodeValue;
         $CNPJ = substr($CNPJ, -14);
-        $vCT = number_format($this->getTagValue($this->vPrest, "vRec"), 2, "", "") * 100;
+        
+        if (in_array($this->tpCTe, [5, 6])){
+            $vCT = number_format($this->getTagValue($this->total, "vTRec"), 2, "", "") * 100;
+        } else {
+            $vCT = number_format($this->getTagValue($this->vPrest, "vRec"), 2, "", "") * 100;
+        }
+
         $ICMS_CST = $this->getTagValue($this->ICMS, "CST");
         switch ($ICMS_CST) {
             case '00':
