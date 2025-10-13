@@ -113,6 +113,7 @@ class Dacte extends DaCommon
             $this->dom = new Dom();
             $this->dom->loadXML($this->xml);
             $this->cteProc = $this->dom->getElementsByTagName("cteProc")->item(0);
+            $this->cteSimpProc = $this->dom->getElementsByTagName("cteSimpProc")->item(0);
             if (empty($this->dom->getElementsByTagName("infCte")->item(0))) {
                 throw new \Exception('Isso não é um CT-e.');
             }
@@ -1132,7 +1133,7 @@ class Dacte extends DaCommon
             'message' => [],
             'submessage' => ''
         ];
-        if (!isset($this->cteProc)) {
+        if (!isset($this->cteProc) && !isset($this->cteSimpProc)) {
             $resp['status'] = false;
             $resp['message'][] = 'CTe NÃO PROTOCOLADO';
         } else {
@@ -1143,8 +1144,13 @@ class Dacte extends DaCommon
                 $resp['status'] = false;
                 $resp['message'][] = "PRÉ-VISUALIZAÇÃO";
             }
-            $retEvento = $this->cteProc->getElementsByTagName('retEventoCTe')->item(0);
-            $cStat = $this->getTagValue($this->cteProc, "cStat");
+            if ($this->cteProc) {
+                $retEvento = $this->cteProc->getElementsByTagName('retEventoCTe')->item(0);
+                $cStat = $this->getTagValue($this->cteProc, "cStat");
+            } else if ($this->cteSimpProc) {
+                $retEvento = $this->cteSimpProc->getElementsByTagName('retEventoCTe')->item(0);
+                $cStat = $this->getTagValue($this->cteSimpProc, "cStat");
+            }
             if (
                 $cStat == '110' ||
                 $cStat == '301' ||
