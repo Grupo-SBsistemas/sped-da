@@ -4017,7 +4017,7 @@ class Dacte extends DaCommon
         $this->pdf->textBox($x + 10, $y, $w * 0.25, $h - 3.4, $texto, $aFont, 'T', 'C', 0, '');
         $x = $oldX;
         $y = $y + 5;
-        $texto = 'RG';
+        $texto = 'CPF/RG';
         $aFont = ['font' => $this->fontePadrao, 'size' => $this->default_size, 'style' => ''];
         $this->pdf->textBox($x, $y + 3, $w * 0.33, $h, $texto, $aFont, 'T', 'L', 0, '', true, 0, 0, false);
         $x += $w * 0.85;
