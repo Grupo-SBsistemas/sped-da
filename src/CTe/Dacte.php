@@ -76,6 +76,8 @@ class Dacte extends DaCommon
     protected $detCont;
     protected $arrayCont = array();
     protected $idDocAntEle = [];
+    protected $infDocAnt;
+    protected $infNFeTranspParcial;
     protected $qrCodCTe;
     protected $infCTeMultimodal = [];
 
@@ -161,8 +163,10 @@ class Dacte extends DaCommon
             $this->Comp = $this->dom->getElementsByTagName("Comp");
             $this->infNF = $this->dom->getElementsByTagName("infNF");
             $this->infNFe = $this->dom->getElementsByTagName("infNFe");
+            $this->infNFeTranspParcial = $this->dom->getElementsByTagName("infNFeTranspParcial");
             $this->infOutros = $this->dom->getElementsByTagName("infOutros");
             $this->idDocAntEle = $this->dom->getElementsByTagName("idDocAntEle");
+            $this->infDocAnt = $this->dom->getElementsByTagName("infDocAnt");
             $this->infCTeMultimodal = $this->dom->getElementsByTagName("infCTeMultimodal");
             $this->compl = $this->dom->getElementsByTagName("compl");
             $this->ICMS = $this->dom->getElementsByTagName("ICMS")->item(0);
@@ -2650,14 +2654,23 @@ class Dacte extends DaCommon
         );
 
         $nomeTag = 'chave';
-        if ($this->tpCTe == 5){
+        if (in_array($this->tpCTe, [5, 6])) {
             $nomeTag = 'chNFe';
         }
 
         // Busca todos os documentos que podem ter no bloco para calcular o numero de paginas necessario
         foreach ($this->infNFe as $k => $d) {
-            $chaveNFe = $this->infNFe->item($k)->getElementsByTagName($nomeTag)->item(0)->nodeValue;
-            $this->arrayNFe[] = $chaveNFe;
+            $chaveNFe = $this->getTagValue($this->infNFe->item($k), $nomeTag);
+            if ($chaveNFe != '') {
+                $this->arrayNFe[] = $chaveNFe;
+            }
+        }
+
+        foreach ($this->infNFeTranspParcial as $k => $d) {
+            $chaveNFe = $this->getTagValue($this->infNFeTranspParcial->item($k), 'chNFe');
+            if ($chaveNFe != '') {
+                $this->arrayNFe[] = $chaveNFe;
+            }
         }
 
         foreach ($this->infNF as $k => $d) {
@@ -2669,11 +2682,24 @@ class Dacte extends DaCommon
         }
 
         foreach ($this->idDocAntEle as $k => $d) {
-            $this->arrIdDocAntEle[] = $this->idDocAntEle->item($k)->getElementsByTagName('chCTe')->item(0)->nodeValue;
+            $chaveCTe = $this->getTagValue($this->idDocAntEle->item($k), 'chCTe');
+            if ($chaveCTe != '') {
+                $this->arrIdDocAntEle[] = $chaveCTe;
+            }
+        }
+
+        foreach ($this->infDocAnt as $k => $d) {
+            $chaveCTe = $this->getTagValue($this->infDocAnt->item($k), 'chCTe');
+            if ($chaveCTe != '') {
+                $this->arrIdDocAntEle[] = $chaveCTe;
+            }
         }
 
         foreach ($this->infCTeMultimodal as $k => $d) {
-            $this->arrInfCTeMultimodal[] = $this->infCTeMultimodal->item($k)->getElementsByTagName('chCTe')->item(0)->nodeValue;
+            $chaveCTe = $this->getTagValue($this->infCTeMultimodal->item($k), 'chCTe');
+            if ($chaveCTe != '') {
+                $this->arrInfCTeMultimodal[] = $chaveCTe;
+            }
         }
 
 
