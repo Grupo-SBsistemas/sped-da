@@ -1057,10 +1057,21 @@ class Damdfe extends DaCommon
                 $altura = $y;
                 for ($i = 0; $i < $valesPedagios; $i++) {
                     $altura += 4;
-                    $pgNode = $this->valePed->item($i)->getElementsByTagName('CNPJPg');
-                    $texto = $pgNode->length == 0 ? '' : $this->formatField(str_pad($pgNode->item(0)->nodeValue, 14, '0', STR_PAD_LEFT), '##.###.###/####-##');
+
+                    $cnpjNode = $this->valePed->item($i)->getElementsByTagName('CNPJPg');
+                    $cpfNode  = $this->valePed->item($i)->getElementsByTagName('CPFPg');
+
+                    if ($cnpjNode->length > 0) {
+                        $texto = $this->formatField(str_pad($cnpjNode->item(0)->nodeValue, 14, '0', STR_PAD_LEFT), '##.###.###/####-##');
+                    } elseif ($cpfNode->length > 0) {
+                        $texto = $this->formatField(str_pad($cpfNode->item(0)->nodeValue, 11, '0', STR_PAD_LEFT), '###.###.###-##');
+                    } else {
+                        $texto = '';
+                    }
+
                     $aFont = array('font' => $this->fontePadrao, 'size' => 8, 'style' => '');
                     $this->pdf->textBox($x1, $altura, $x2 - 5, 10, $texto, $aFont, 'T', 'L', 0, '', false);
+
                 }
                 $x1 += $x2 - 3;
                 $this->pdf->textBox($x1, $y, $x2 - 3, 6 + ($tamanho / 2), '', $this->baseFont, 'T', 'L', 0);
