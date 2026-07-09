@@ -1068,7 +1068,6 @@ class Damdfe extends DaCommon
                     } else {
                         $texto = '';
                     }
-
                     $aFont = array('font' => $this->fontePadrao, 'size' => 8, 'style' => '');
                     $this->pdf->textBox($x1, $altura, $x2 - 5, 10, $texto, $aFont, 'T', 'L', 0, '', false);
 
