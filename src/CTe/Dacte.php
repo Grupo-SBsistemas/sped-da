@@ -1266,7 +1266,7 @@ class Dacte extends DaCommon
         $texto .= $this->getTagValue($this->enderReme, "nro");
         $texto .= ($this->getTagValue($this->enderReme, "xCpl") != "") ?
             ' - ' . $this->getTagValue($this->enderReme, "xCpl") : '';
-        $this->pdf->textBox($x1, $y, $w, $h, $texto, $aFont, 'T', 'L', 0, '', true, 0, 0, false);
+        $this->pdf->textBox($x1, $y, $w - 18, $h, $texto, $aFont, 'T', 'L', 0, '', true, 0, 0, false);
         $y += 3;
         $texto = $this->getTagValue($this->enderReme, "xBairro");
         $this->pdf->textBox($x1, $y, $w, $h, $texto, $aFont, 'T', 'L', 0, '', true, 0, 0, false);
