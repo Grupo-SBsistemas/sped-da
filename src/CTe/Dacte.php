@@ -4114,7 +4114,11 @@ class Dacte extends DaCommon
         $y1 = $y + 3;
         $aFont = $this->formatPadrao;
         foreach ($this->textoAdic as $textoAdic) {
-            $texto = $this->getTagValue($textoAdic, "xTexto");
+            $campo = trim($textoAdic->getAttribute('xCampo'));
+            $valor = $this->getTagValue($textoAdic, "xTexto");
+            $texto = $campo !== '' && $campo !== 'Lei da Transparencia'
+                ? $campo . ': ' . $valor
+                : $valor;
             $this->pdf->textBox($x, $y1, $w * .62, $h - 3, $texto, $aFont, 'T', 'L', 0, '', false);
 
             $lines = ceil(strlen($texto) / 79);
