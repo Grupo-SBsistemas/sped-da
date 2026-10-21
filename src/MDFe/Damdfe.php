@@ -150,6 +150,12 @@ class Damdfe extends DaCommon
                 $this->valePed = $this->dom->getElementsByTagName("valePed")->item(0)->getElementsByTagName("disp");
             }
             $this->infCpl = ($infCpl = $this->dom->getElementsByTagName('infCpl')->item(0)) ? $infCpl->nodeValue : "";
+            $percurso = [$this->UFIni];
+            foreach ($this->dom->getElementsByTagName('UFPer') as $ufPer) {
+                $percurso[] = $ufPer->nodeValue;
+            }
+            $percurso[] = $this->UFFim;
+            $this->percurso = implode(' - ', $percurso);
             $this->chMDFe = str_replace(
                 'MDFe',
                 '',
@@ -407,12 +413,12 @@ class Damdfe extends DaCommon
         ];
         if (!isset($this->mdfeProc)) {
             $resp['status'] = false;
-            $resp['message'][] = 'MDFe NÃO PROTOCOLADA';
+            $resp['message'][] = 'MDFe NÃO PROTOCOLADO';
         } else {
             if ($this->getTagValue($this->ide, "tpAmb") == '2') {
                 $resp['status'] = false;
                 $resp['valida'] = false;
-                $resp['message'][] = "MDFe EMITIDA EM HOMOLOGAÇÃO";
+                $resp['message'][] = "MDFe EMITIDO EM HOMOLOGAÇÃO";
             }
             $retEvento = $this->mdfeProc->getElementsByTagName('retEventoMDFe')->item(0);
             $cStat = $this->getTagValue($this->mdfeProc, "cStat");
@@ -426,7 +432,7 @@ class Damdfe extends DaCommon
             ) {
                 $resp['status'] = false;
                 $resp['valida'] = false;
-                $resp['message'][] = "MDFe CANCELADA";
+                $resp['message'][] = "MDFe CANCELADO";
             } elseif (($cStat == '103'
                     || $cStat == '136'
                     || $cStat == '135'
@@ -435,7 +441,7 @@ class Damdfe extends DaCommon
                 and empty($retEvento)
             ) {
                 $resp['status'] = false;
-                $resp['message'][] = "MDFe ENCERRADA";
+                $resp['message'][] = "MDFe ENCERRADO";
             } elseif (!empty($retEvento)) {
                 $infEvento = $retEvento->getElementsByTagName('infEvento')->item(0);
                 $cStat = $this->getTagValue($infEvento, "cStat");
@@ -452,16 +458,16 @@ class Damdfe extends DaCommon
                 ) {
                     $resp['status'] = false;
                     $resp['valida'] = false;
-                    $resp['message'][] = "MDFe CANCELADA";
+                    $resp['message'][] = "MDFe CANCELADO";
                     $resp['submessage'] = "{$dhEvento} - {$nProt}";
                 } elseif ($tpEvento == '110112' && ($cStat == '136' || $cStat == '135' || $cStat == '155')) {
                     $resp['status'] = false;
-                    $resp['message'][] = "MDFe ENCERRADA";
+                    $resp['message'][] = "MDFe ENCERRADO";
                     $resp['submessage'] = "{$dhEvento} - {$nProt}";
                 }
             } elseif (($this->tpEmis == 2 || $this->tpEmis == 5) and empty($this->nProt)) {
                 $resp['status'] = false;
-                $resp['message'][] = "MDFE Emitido em Contingência";
+                $resp['message'][] = "MDFe Emitido em Contingência";
                 $resp['message'][] = "devido à problemas técnicos";
             }
         }
@@ -852,7 +858,7 @@ class Damdfe extends DaCommon
         $texto = $this->formatField($this->chMDFe, $this->formatoChave);
         $this->pdf->textBox($x + $maxW / 2, $y + 8, $maxW / 2, 6, $texto, $aFont, 'T', 'L', 0, '');
         $aFont = array('font' => $this->fontePadrao, 'size' => 10, 'style' => 'B');
-        $texto = 'Consulte em https://dfe-portal.sefazvirtual.rs.gov.br/MDFe/consulta';
+        $texto = 'Consulte em https://dfe-portal.svrs.rs.gov.br/MDFE/Consulta';
         $this->pdf->textBox($x + $maxW / 2, $y + 12, $maxW / 2, 6, $texto, $aFont, 'T', 'L', 0, '');
 
         $x1 = $x;
@@ -1028,10 +1034,22 @@ class Damdfe extends DaCommon
                 // dar um break para pegar só o primeiro seguro
             }
 
+            // Percurso (UF inicial, UFs de percurso e UF final), na mesma linha do CIOT
+            $x1 = $x;
+            $xFim = round($maxW / 4, 0) * 2;
+            $altura += 8;
+            $yold = $altura;
+            $aFont = array('font' => $this->fontePadrao, 'size' => 8, 'style' => 'B');
+            $this->pdf->textBox($x1, $altura, $xFim, 8, 'Percurso', $aFont, 'T', 'L', 0, '', false);
+            $altura += 4;
+            $aFont = array('font' => $this->fontePadrao, 'size' => 8, 'style' => '');
+            $this->pdf->textBox($x1, $altura, $xFim, 8, $this->percurso, $aFont, 'T', 'L', 0, '', false);
+            $this->pdf->setLineWidth(0.1);
+            $this->pdf->line($x1, $altura + 4, $xFim, $altura + 4);
+
 
             $x1 = $x;
             $y = $altura += 8;
-            $yold = $y;
             $x2 = round($maxW / 2, 0);
 
             // Vale Pedágio
