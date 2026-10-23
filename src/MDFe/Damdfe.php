@@ -1055,8 +1055,7 @@ class Damdfe extends DaCommon
             // Vale Pedágio
             if ($this->valePed != "" && $this->valePed->length > 0) {
 
-                // $valesPedagios = $this->valePed->length;
-                $valesPedagios = 1; // feito pois só vai imprimir o primeiro vale pedágio.
+                $valesPedagios = $this->valePed->length;
                 $tamanho = ($valesPedagios * 7.5);
 
                 $this->pdf->textBox($x1, $y, $x2, 11 + $tamanho / 2, '', $this->baseFont, 'T', 'L', 0);
@@ -1088,6 +1087,11 @@ class Damdfe extends DaCommon
                     }
                     $aFont = array('font' => $this->fontePadrao, 'size' => 8, 'style' => '');
                     $this->pdf->textBox($x1, $altura, $x2 - 5, 10, $texto, $aFont, 'T', 'L', 0, '', false);
+
+                    if ($i != 0) {
+                        $this->pdf->setLineWidth(0.03);
+                        $this->pdf->line($x1, $altura, round($maxW / 2, 0), $altura);
+                    }
 
                 }
                 $x1 += $x2 - 3;
