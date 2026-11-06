@@ -156,6 +156,16 @@ class Damdfe extends DaCommon
             }
             $percurso[] = $this->UFFim;
             $this->percurso = implode(' - ', $percurso);
+            // documentos da carga (CT-e, NF-e e MDF-e de transporte), na ordem do XML
+            $this->docsCarga = [];
+            $tiposDoc = ['chCTe' => 'CT-e', 'chNFe' => 'NF-e', 'chMDFe' => 'MDF-e'];
+            foreach ($this->dom->getElementsByTagName('infMunDescarga') as $munDescarga) {
+                foreach ($munDescarga->getElementsByTagName('*') as $node) {
+                    if (isset($tiposDoc[$node->nodeName])) {
+                        $this->docsCarga[] = [$tiposDoc[$node->nodeName], $node->nodeValue];
+                    }
+                }
+            }
             $this->chMDFe = str_replace(
                 'MDFe',
                 '',
@@ -247,6 +257,8 @@ class Damdfe extends DaCommon
         }
         //coloca os dados da MDFe
         $y = $this->bodyMDFe($x, $y);
+        //coloca os documentos da carga
+        $y = $this->documentosCargaMDFe($x, $y, $yInic);
         //coloca os dados da MDFe
         $y = $this->footerMDFe($x, $y);
     }
@@ -670,7 +682,7 @@ class Damdfe extends DaCommon
         $texto = 'FL';
         $aFont = array('font' => $this->fontePadrao, 'size' => 8, 'style' => '');
         $this->pdf->textBox($x1, $y, $x2 - 23, 8, $texto, $aFont, 'T', 'L', 0, '', false);
-        $texto = '1/1';
+        $texto = '1/{nb}';
         $aFont = array('font' => $this->fontePadrao, 'size' => 10, 'style' => '');
         $this->pdf->textBox($x1, $y + 4, $x2 - 23, 4, $texto, $aFont, 'T', 'L', 0, '', false);
         $x1 += $x2 - 22;
@@ -1403,6 +1415,90 @@ class Damdfe extends DaCommon
         $this->pdf->image($pic, $xQr, $yQr, $wQr, $hQr, 'PNG');
     }
 
+
+    /**
+     * documentosCargaMDFe
+     * Lista os documentos que compõem a carga (tipo e chave de acesso) em duas
+     * colunas lado a lado, continuando em novas páginas quando não couberem na atual
+     *
+     * @param  float $x
+     * @param  float $y
+     * @param  float $yInic posição inicial do relatório nas novas páginas
+     * @return float
+     */
+    private function documentosCargaMDFe($x, $y, $yInic)
+    {
+        if (empty($this->docsCarga)) {
+            return $y;
+        }
+        $maxW = $this->wPrint;
+        // mesmas metades usadas pelas demais seções (ex.: Veículo | Condutor)
+        $colunas = [
+            [$x, round($maxW / 4, 0) * 2],
+            [round($maxW / 2, 0) + 7, $maxW],
+        ];
+        // fonte 7 para que tipo, número e chave caibam em meia página
+        $wTipo = 9;
+        $wNumero = 13;
+        $hLinha = 4;
+        $yLimite = $this->hPrint;
+        $aFontTitulo = array('font' => $this->fontePadrao, 'size' => 8, 'style' => 'B');
+        $aFont = array('font' => $this->fontePadrao, 'size' => 7, 'style' => '');
+
+        // número extraído da chave de acesso, sem os zeros à esquerda
+        $numeroDoc = function ($chave) {
+            return (string) (int) substr($chave, 25, 9);
+        };
+        // completa com zeros até o tamanho do maior número, para ficarem alinhados
+        $digitos = max(array_map(function ($doc) use ($numeroDoc) {
+            return strlen($numeroDoc($doc[1]));
+        }, $this->docsCarga));
+
+        $linhaDoc = function ($xIni, $xFim, $y, $tipo, $numero, $chave) use ($wTipo, $wNumero, $aFont) {
+            $xCol = $xIni;
+            foreach ([[$tipo, $wTipo], [$numero, $wNumero]] as [$texto, $w]) {
+                $this->pdf->textBox($xCol, $y, $w, 8, $texto, $aFont, 'T', 'L', 0, '', false);
+                $xCol += $w;
+            }
+            $this->pdf->textBox($xCol, $y, $xFim - $xCol, 8, $chave, $aFont, 'T', 'L', 0, '', false);
+        };
+
+        // com um único documento, a coluna da direita fica sem cabeçalho
+        $colunasCabecalho = array_slice($colunas, 0, count($this->docsCarga));
+
+        $cabecalho = function ($y, $titulo) use ($x, $maxW, $colunasCabecalho, $aFontTitulo, $linhaDoc) {
+            $this->pdf->textBox($x, $y, $maxW, 8, $titulo, $aFontTitulo, 'T', 'L', 0, '', false);
+            $y += 5;
+            $this->pdf->setLineWidth(0.1);
+            foreach ($colunasCabecalho as [$xIni, $xFim]) {
+                $linhaDoc($xIni, $xFim, $y, 'Tipo', 'Número', 'Chave de Acesso');
+                $this->pdf->line($xIni, $y + 4, $xFim, $y + 4);
+            }
+            return $y + 4;
+        };
+
+        $y = $cabecalho($y, 'Documentos da Carga');
+        foreach (array_chunk($this->docsCarga, 2) as $linha) {
+            if ($y + $hLinha > $yLimite) {
+                $this->pdf->addPage($this->orientacao, $this->papel);
+                $y = $cabecalho($yInic, 'Documentos da Carga (continuação)');
+            }
+            foreach ($linha as $c => [$tipo, $chave]) {
+                [$xIni, $xFim] = $colunas[$c];
+                $numero = str_pad($numeroDoc($chave), $digitos, '0', STR_PAD_LEFT);
+                $texto = $this->formatField($chave, $this->formatoChave);
+                $linhaDoc($xIni, $xFim, $y, $tipo, $numero, $texto);
+            }
+            $y += $hLinha;
+        }
+        $y += 6;
+        // as observações precisam de ao menos duas linhas
+        if ($y + 10 > $yLimite) {
+            $this->pdf->addPage($this->orientacao, $this->papel);
+            $y = $yInic;
+        }
+        return $y;
+    }
 
     /**
      * footerMDFe
