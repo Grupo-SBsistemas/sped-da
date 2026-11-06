@@ -1438,11 +1438,10 @@ class Damdfe extends DaCommon
             [$x, round($maxW / 4, 0) * 2],
             [round($maxW / 2, 0) + 7, $maxW],
         ];
-        $wNumero = 16;
         $hLinha = 4;
         $yLimite = $this->hPrint;
         $aFontTitulo = array('font' => $this->fontePadrao, 'size' => 8, 'style' => 'B');
-        $aFont = array('font' => $this->fontePadrao, 'size' => 8, 'style' => '');
+        $aFontCabecalho = array('font' => $this->fontePadrao, 'size' => 8, 'style' => '');
 
         // tipo no plural, mesmo com um único documento (ex.: CT-es, NF-es)
         $tipos = array_unique(array_column($this->docsCarga, 0));
@@ -1457,7 +1456,22 @@ class Damdfe extends DaCommon
             return strlen($numeroDoc($doc[1]));
         }, $this->docsCarga));
 
-        $linhaDoc = function ($xIni, $xFim, $y, $numero, $chave) use ($wNumero, $aFont) {
+        // larguras medidas na fonte em uso (a Arial, por exemplo, é bem mais larga que a Times)
+        $medir = function ($texto, $tamanho) {
+            $this->pdf->setFont($this->fontePadrao, '', $tamanho);
+            return $this->pdf->getStringWidth($texto);
+        };
+        $wNumero = max($medir('Número', 8), $medir(str_repeat('0', $digitos), 8)) + 3;
+        $wChave = round($maxW / 4, 0) * 2 - $x - $wNumero - 1;
+        // reduz a fonte das linhas só o necessário para a chave não quebrar
+        $chaveExemplo = $this->formatField($this->docsCarga[0][1], $this->formatoChave);
+        $tamanho = 8;
+        while ($tamanho > 6 && $medir($chaveExemplo, $tamanho) > $wChave) {
+            $tamanho -= 0.5;
+        }
+        $aFont = array('font' => $this->fontePadrao, 'size' => $tamanho, 'style' => '');
+
+        $linhaDoc = function ($xIni, $xFim, $y, $numero, $chave, $aFont) use ($wNumero) {
             $this->pdf->textBox($xIni, $y, $wNumero, 8, $numero, $aFont, 'T', 'L', 0, '', false);
             $this->pdf->textBox($xIni + $wNumero, $y, $xFim - $xIni - $wNumero, 8, $chave, $aFont, 'T', 'L', 0, '', false);
         };
@@ -1465,12 +1479,12 @@ class Damdfe extends DaCommon
         // com um único documento, a coluna da direita fica sem cabeçalho
         $colunasCabecalho = array_slice($colunas, 0, count($this->docsCarga));
 
-        $cabecalho = function ($y, $titulo) use ($x, $maxW, $colunasCabecalho, $aFontTitulo, $linhaDoc) {
+        $cabecalho = function ($y, $titulo) use ($x, $maxW, $colunasCabecalho, $aFontTitulo, $aFontCabecalho, $linhaDoc) {
             $this->pdf->textBox($x, $y, $maxW, 8, $titulo, $aFontTitulo, 'T', 'L', 0, '', false);
             $y += 5;
             $this->pdf->setLineWidth(0.1);
             foreach ($colunasCabecalho as [$xIni, $xFim]) {
-                $linhaDoc($xIni, $xFim, $y, 'Número', 'Chave de Acesso');
+                $linhaDoc($xIni, $xFim, $y, 'Número', 'Chave de Acesso', $aFontCabecalho);
                 $this->pdf->line($xIni, $y + 4, $xFim, $y + 4);
             }
             return $y + 4;
@@ -1485,7 +1499,7 @@ class Damdfe extends DaCommon
             foreach ($linha as $c => [, $chave]) {
                 [$xIni, $xFim] = $colunas[$c];
                 $numero = str_pad($numeroDoc($chave), $digitos, '0', STR_PAD_LEFT);
-                $linhaDoc($xIni, $xFim, $y, $numero, $this->formatField($chave, $this->formatoChave));
+                $linhaDoc($xIni, $xFim, $y, $numero, $this->formatField($chave, $this->formatoChave), $aFont);
             }
             $y += $hLinha;
         }
