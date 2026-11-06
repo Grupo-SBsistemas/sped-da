@@ -1418,8 +1418,9 @@ class Damdfe extends DaCommon
 
     /**
      * documentosCargaMDFe
-     * Lista os documentos que compõem a carga (tipo e chave de acesso) em duas
-     * colunas lado a lado, continuando em novas páginas quando não couberem na atual
+     * Lista os documentos que compõem a carga (número e chave de acesso) em duas
+     * colunas lado a lado, continuando em novas páginas quando não couberem na atual.
+     * O tipo do documento (CT-e ou NF-e) vai no título do bloco
      *
      * @param  float $x
      * @param  float $y
@@ -1437,13 +1438,15 @@ class Damdfe extends DaCommon
             [$x, round($maxW / 4, 0) * 2],
             [round($maxW / 2, 0) + 7, $maxW],
         ];
-        // fonte 7 para que tipo, número e chave caibam em meia página
-        $wTipo = 9;
-        $wNumero = 13;
+        $wNumero = 16;
         $hLinha = 4;
         $yLimite = $this->hPrint;
         $aFontTitulo = array('font' => $this->fontePadrao, 'size' => 8, 'style' => 'B');
-        $aFont = array('font' => $this->fontePadrao, 'size' => 7, 'style' => '');
+        $aFont = array('font' => $this->fontePadrao, 'size' => 8, 'style' => '');
+
+        // tipo no plural, mesmo com um único documento (ex.: CT-es, NF-es)
+        $tipos = array_unique(array_column($this->docsCarga, 0));
+        $titulo = 'Documentos da Carga - ' . implode('s / ', $tipos) . 's';
 
         // número extraído da chave de acesso, sem os zeros à esquerda
         $numeroDoc = function ($chave) {
@@ -1454,13 +1457,9 @@ class Damdfe extends DaCommon
             return strlen($numeroDoc($doc[1]));
         }, $this->docsCarga));
 
-        $linhaDoc = function ($xIni, $xFim, $y, $tipo, $numero, $chave) use ($wTipo, $wNumero, $aFont) {
-            $xCol = $xIni;
-            foreach ([[$tipo, $wTipo], [$numero, $wNumero]] as [$texto, $w]) {
-                $this->pdf->textBox($xCol, $y, $w, 8, $texto, $aFont, 'T', 'L', 0, '', false);
-                $xCol += $w;
-            }
-            $this->pdf->textBox($xCol, $y, $xFim - $xCol, 8, $chave, $aFont, 'T', 'L', 0, '', false);
+        $linhaDoc = function ($xIni, $xFim, $y, $numero, $chave) use ($wNumero, $aFont) {
+            $this->pdf->textBox($xIni, $y, $wNumero, 8, $numero, $aFont, 'T', 'L', 0, '', false);
+            $this->pdf->textBox($xIni + $wNumero, $y, $xFim - $xIni - $wNumero, 8, $chave, $aFont, 'T', 'L', 0, '', false);
         };
 
         // com um único documento, a coluna da direita fica sem cabeçalho
@@ -1471,23 +1470,22 @@ class Damdfe extends DaCommon
             $y += 5;
             $this->pdf->setLineWidth(0.1);
             foreach ($colunasCabecalho as [$xIni, $xFim]) {
-                $linhaDoc($xIni, $xFim, $y, 'Tipo', 'Número', 'Chave de Acesso');
+                $linhaDoc($xIni, $xFim, $y, 'Número', 'Chave de Acesso');
                 $this->pdf->line($xIni, $y + 4, $xFim, $y + 4);
             }
             return $y + 4;
         };
 
-        $y = $cabecalho($y, 'Documentos da Carga');
+        $y = $cabecalho($y, $titulo);
         foreach (array_chunk($this->docsCarga, 2) as $linha) {
             if ($y + $hLinha > $yLimite) {
                 $this->pdf->addPage($this->orientacao, $this->papel);
-                $y = $cabecalho($yInic, 'Documentos da Carga (continuação)');
+                $y = $cabecalho($yInic, $titulo . ' (continuação)');
             }
-            foreach ($linha as $c => [$tipo, $chave]) {
+            foreach ($linha as $c => [, $chave]) {
                 [$xIni, $xFim] = $colunas[$c];
                 $numero = str_pad($numeroDoc($chave), $digitos, '0', STR_PAD_LEFT);
-                $texto = $this->formatField($chave, $this->formatoChave);
-                $linhaDoc($xIni, $xFim, $y, $tipo, $numero, $texto);
+                $linhaDoc($xIni, $xFim, $y, $numero, $this->formatField($chave, $this->formatoChave));
             }
             $y += $hLinha;
         }
