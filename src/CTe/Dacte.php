@@ -1783,13 +1783,16 @@ class Dacte extends DaCommon
         $y += 8;
         $x = $oldX;
 
-        //Identifica código da unidade
-        //01 = KG (QUILOS)
         $qCarga = 0;
+        $temPesoBruto = false;
+        $temPesoLiquido = false;
         foreach ($this->infQ as $infQ) {
-            if (in_array($this->getTagValue($infQ, "cUnid"), array('01', '02'))) {
-                $qCarga += $this->getTagValue($infQ, "cUnid") == '01' ?
-                    $this->getTagValue($infQ, "qCarga") : $this->getTagValue($infQ, "qCarga") * 1000;
+            $unidade = $this->getTagValue($infQ, "cUnid");
+            if (in_array($unidade, ['01', '02'], true)) {
+                $qCarga += $this->getTagValue($infQ, "qCarga") * ($unidade === '02' ? 1000 : 1);
+                $tipoMedida = mb_strtoupper($this->getTagValue($infQ, "tpMed"), 'UTF-8');
+                $temPesoBruto = $temPesoBruto || $tipoMedida === 'PESO BRUTO';
+                $temPesoLiquido = $temPesoLiquido || in_array($tipoMedida, ['PESO LIQUIDO', 'PESO LÍQUIDO'], true);
             }
         }
 
@@ -1803,7 +1806,7 @@ class Dacte extends DaCommon
         $this->pdf->textBox($x, $y, $w, $h, $texto, $aFont, 'T', 'L', 0, '', true, 0, 0, false);
 
 
-        $texto = 'PESO BRUTO (KG)';
+        $texto = $temPesoLiquido && !$temPesoBruto ? 'PESO LÍQUIDO (KG)' : 'PESO BRUTO (KG)';
         $aFont = array(
             'font' => $this->fontePadrao,
             'size' => $this->default_size,
